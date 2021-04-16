@@ -1,0 +1,32 @@
+<template>
+	<div @click="play()">audioPlayer</div>
+</template>
+<script>
+export default {
+	props: ['audioUrl'],
+	data: function () {
+		return {
+			isPlaying: false,
+			isLoaded: false,
+			audio: '',
+		};
+	},
+	methods: {
+		async play() {
+			if (!this.isLoaded) {
+				this.audio = new Audio(
+					`http://localhost:88/audio/${this.audioUrl.replaceAll('/', '-')}`
+				);
+				this.isLoaded = true;
+			}
+			if (!this.isPlaying) {
+				this.audio.play();
+				this.isPlaying = true;
+			} else {
+				this.audio.pause();
+				this.isPlaying = false;
+			}
+		},
+	},
+};
+</script>

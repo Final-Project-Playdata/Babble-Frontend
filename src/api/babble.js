@@ -68,6 +68,78 @@ function getUser() {
 	});
 }
 
+function insertComment(postId, comment) {
+	return mvcInstance.post(`post/${postId}/comment`, comment).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function deleteComment(postId, commentId) {
+	return mvcInstance.delete(`post/${postId}/comment/${commentId}`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function deleteCommentList(id) {
+	return mvcInstance.delete(`post/${id}/comments`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function deleteLikeList(id) {
+	return mvcInstance.delete(`post/${id}/likes`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function deleteTagList(id) {
+	return mvcInstance.delete(`post/${id}/tags`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function like(id) {
+	return mvcInstance.post(`post/${id}/like`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function unlike(id) {
+	return mvcInstance.delete(`post/${id}/like`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function follow(id) {
+	return mvcInstance.post(`user/${id}/follow`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function unfollow(id) {
+	return mvcInstance.delete(`user/${id}/follow`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function getFollowerList(id) {
+	return mvcInstance.get(`user/${id}/follower`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function getFollowingList(id) {
+	return mvcInstance.get(`user/${id}/following`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function getLikePostList(id) {
+	return mvcInstance.get(`user/${id}/likes`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
 export {
 	getTagsInPost,
 	insertTagList,
@@ -80,4 +152,16 @@ export {
 	getPostListWithTag,
 	insertRetweetPost,
 	getUser,
+	insertComment,
+	deleteCommentList,
+	deleteLikeList,
+	deleteTagList,
+	like,
+	unlike,
+	deleteComment,
+	follow,
+	unfollow,
+	getFollowerList,
+	getFollowingList,
+	getLikePostList,
 };

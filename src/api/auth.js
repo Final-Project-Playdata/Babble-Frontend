@@ -1,5 +1,5 @@
 // 로그인, 회원 가입, 회원 탈퇴
-import { instance } from './index';
+import { instance, mvcInstance } from './index';
 
 // 회원가입 API
 function signUp(data) {
@@ -16,4 +16,8 @@ function allClient(data) {
 	return instance.get('/getMemberList', data);
 }
 
-export { signUp, signIn, allClient };
+function updateUserInfo(data) {
+	return mvcInstance.put(`user/${data.id}`, data);
+}
+
+export { signUp, signIn, allClient, updateUserInfo };

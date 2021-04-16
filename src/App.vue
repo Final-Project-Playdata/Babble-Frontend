@@ -1,12 +1,11 @@
 <template>
-  <Layout></Layout>
+	<Layout></Layout>
 </template>
 
 <script>
-import Layout from './layouts/Layout.vue'
+import Layout from './layouts/Layout.vue';
+import './utils/freqtimeupdate.js';
 export default {
-  components: { Layout },
-}
+	components: { Layout },
+};
 </script>
-
-<style></style>
