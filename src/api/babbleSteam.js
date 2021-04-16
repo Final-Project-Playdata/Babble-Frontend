@@ -14,4 +14,12 @@ function getImage() {
 	});
 }
 
-export { getAudio, getImage };
+const config = { headers: { 'Content-Type': 'multipart/form-data' } };
+
+function saveAudio(formData) {
+	return fluxInstance.post('audio', formData, config).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+export { getAudio, getImage, saveAudio };

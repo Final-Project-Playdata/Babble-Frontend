@@ -155,6 +155,7 @@
 import { ref, computed } from 'vue';
 import store from '../store';
 import { updateUserInfo } from '../api/auth.js';
+import { saveAudio } from '../api/babbleSteam.js';
 export default {
 	setup(props, { emit }) {
 		const tweetBody = ref('');
@@ -183,23 +184,36 @@ export default {
 			reader.readAsDataURL(file);
 		};
 
-		const previewProfileImage = event => {
+		const previewProfileImage = async event => {
 			const file = event.target.files[0];
-			profileImageData.value = file;
-			let reader = new FileReader();
-			reader.onload = function (event) {
-				profileImage.value.src = event.target.result;
-			};
-			reader.readAsDataURL(file);
+			// profileImageData.value = file;
+			// let reader = new FileReader();
+			// reader.onload = function (event) {
+			// 	profileImage.value.src = event.target.result;
+			// };
+			// reader.readAsDataURL(file);
+			console.log(file);
+			let formData = new FormData();
+			formData.append('audio', file);
+			for (let key of formData.entries()) {
+				console.log(`${key}`);
+			}
+			let temp = await saveAudio(formData);
+			console.log(temp.data);
 		};
 
 		const onSaveProfile = async () => {
 			// let data = await updateUserInfo(currentUser.value);
 			// store.state.user = data.data;
 			// currentUser.value = data.data;
+
 			let date = new Date();
-			let fullDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-			console.log(date);
+			let fullDate = `${store.state.user.username}.${date.getFullYear()}-${
+				date.getMonth() + 1
+			}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.wav`;
+
+			let temp = await saveAudio(data);
+			console.log(temp.data);
 			emit('close-modal');
 		};
 

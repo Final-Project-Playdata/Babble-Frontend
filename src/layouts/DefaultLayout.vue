@@ -6,7 +6,8 @@
 		>
 			<div class="flex flex-col items-center xl:items-start">
 				<!-- twitter logo -->
-				<i class="fab fa-twitter text-3xl text-primary xl:ml-4 mb-3"></i>
+				<!-- <i class="fab fa-twitter text-3xl text-primary xl:ml-4 mb-3"></i> -->
+				<img src="../logo/5.jpg" width="200" height="200" class="text-3xl text-primary xl:ml-4 mb-3">
 				<!-- sidemenu icons -->
 				<div class="flex flex-col items-start space-y-1">
 					<router-link
@@ -42,13 +43,13 @@
 					class="hidden xl:flex mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 items-center"
 				>
 					<img
-						:src="currentUser.profile_image_url"
+						:src="currentUser.avatar"
 						class="w-10 h-10 rounded-full"
 					/>
 					<div class="xl:ml-2 hidden xl:block">
-						<div class="text-sm font-bold">{{ currentUser.email }}</div>
+						<div class="text-sm font-bold">{{ currentUser.username }}</div>
 						<div class="text-xs text-gray-500 text-left">
-							@{{ currentUser.username }}
+							@{{ currentUser.nickname }}
 						</div>
 					</div>
 					<i
@@ -57,7 +58,7 @@
 				</button>
 				<div class="xl:hidden flex justify-center">
 					<img
-						:src="currentUser.profile_image_url"
+						:src="currentUser.avatar"
 						class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
 					/>
 				</div>
@@ -77,7 +78,7 @@
 				class="hover:bg-gray-50 border-b border-gray-100 flex p-3 w-full items-center"
 			>
 				<img
-					:src="currentUser.profile_image_url"
+					:src="currentUser.avatar"
 					class="w-10 h-10 rounded-full"
 				/>
 				<div class="ml-2">
