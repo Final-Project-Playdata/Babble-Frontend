@@ -185,7 +185,7 @@ export default {
 		onBeforeMount(async () => {
 			let data = await getPost(route.params.id);
 			tweet.value = data.data;
-			tweet.value.avatar = 'http://localhost:88/image';
+			tweet.value.avatar = `http://localhost:88/image/${tweet.value.avatar}`;
 		});
 		return {
 			router,

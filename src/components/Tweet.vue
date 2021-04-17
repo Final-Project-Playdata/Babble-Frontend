@@ -5,7 +5,7 @@
 	>
 		<router-link :to="`/profile/${tweet.user.id}`">
 			<img
-				:src="tweet.profile_image_url"
+				:src="tweet.user.avatar"
 				class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 			/>
 		</router-link>
@@ -35,6 +35,14 @@
 					</button>
 				</div>
 			</router-link>
+			<!-- tag -->
+			<div>
+				<span v-for="tag in tweet.tagList" :key="tag">
+					<router-link :to="`/${tag}`">
+						#{{ tag }}&nbsp;&nbsp;</router-link
+					></span
+				>
+			</div>
 			<!-- tweet body -->
 			<audio-player :audioUrl="tweet.fileUrl"></audio-player>
 			<!-- tweet actions -->
@@ -112,12 +120,13 @@ export default {
 		},
 		async retweet(tweetId) {
 			const data = {
-				fileUrl: 'C:/ITstudy/12.project/python/011.wav',
+				fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
 				duration: '26.3',
 				tagList: ['test1', 'test2', 'test3'],
 				retweetPostId: tweetId,
 			};
 			let temp = await insertRetweetPost(data);
+			temp.data.user.avatar = `http://localhost:88/image/${temp.data.user.avatar}`;
 			this.$emit('retweet', temp.data);
 			this.tweet.retweetList.push(temp.data);
 			this.isRetweeted = true;

@@ -87,7 +87,7 @@ export default {
 		const onAddTweet = async () => {
 			try {
 				const data = {
-					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
+					fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
 					duration: '26.3',
 					tagList: ['test1', 'test2', 'test3'],
 				};

@@ -42,7 +42,7 @@
 					>
 						<img
 							ref="backgroundImage"
-							:src="currentUser.background"
+							:src="$store.state.user.background"
 							class="object-cover absolute h-full w-full"
 						/>
 						<button
@@ -59,7 +59,7 @@
 						<!-- profile image -->
 						<img
 							ref="profileImage"
-							:src="currentUser.avatar"
+							:src="$store.state.user.avatar"
 							class="border-4 border-white w-28 h-28 absolute -bottom-14 left-2 rounded-full"
 						/>
 						<button
@@ -82,7 +82,7 @@
 					>
 						<input
 							type="text"
-							v-model="currentUser.nickname"
+							v-model="$store.state.user.nickname"
 							placeholder="닉네임"
 							class="text-black focus:outline-none"
 						/>
@@ -101,7 +101,7 @@
 					>
 						<input
 							type="text"
-							v-model="currentUser.firstName"
+							v-model="$store.state.user.firstName"
 							placeholder="이름"
 							class="text-black focus:outline-none"
 						/>
@@ -111,7 +111,7 @@
 					>
 						<input
 							type="text"
-							v-model="currentUser.lastName"
+							v-model="$store.state.user.lastName"
 							placeholder="성"
 							class="text-black focus:outline-none"
 						/>
@@ -121,7 +121,7 @@
 					>
 						<input
 							type="text"
-							v-model="currentUser.phoneNumber"
+							v-model="$store.state.user.phoneNumber"
 							placeholder="핸드폰 번호"
 							class="text-black focus:outline-none"
 						/>
@@ -129,7 +129,7 @@
 					<div
 						class="mx-2 my-1 px-2 py-3 border text-gray border-gray-200 rounded hover:border-primary hover:text-primary"
 					>
-						<select v-model="currentUser.gender">
+						<select v-model="$store.state.user.gender">
 							<option value="male">Male</option>
 							<option value="female">Female</option>
 							<option value="whatever">Whatever</option>
@@ -141,7 +141,7 @@
 						<input
 							type="date"
 							placeholder="생년월일"
-							v-model="currentUser.birth"
+							v-model="$store.state.user.birth"
 							class="text-black focus:outline-none"
 						/>
 					</div>
@@ -155,12 +155,10 @@
 import { ref, computed } from 'vue';
 import store from '../store';
 import { updateUserInfo } from '../api/auth.js';
-import { saveAudio } from '../api/babbleSteam.js';
+import { saveAudio, saveImage } from '../api/babbleSteam.js';
 export default {
 	setup(props, { emit }) {
 		const tweetBody = ref('');
-		let currentUser = computed(() => store.state.user);
-
 		const profileImage = ref(null);
 		const profileImageData = ref(null);
 		const backgroundImage = ref(null);
@@ -174,8 +172,22 @@ export default {
 			document.getElementById('profileImageInput').click();
 		};
 
+		const getImageName = () => {
+			let date = new Date();
+			let name = `${store.state.user.username}.${date.getFullYear()}-${
+				date.getMonth() + 1
+			}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.jpeg`;
+			return name;
+		};
+
 		const previewBackgroundImage = event => {
-			const file = event.target.files[0];
+			let file = event.target.files[0];
+
+			file = new File([file], getImageName(), {
+				type: file.type,
+				lastModified: file.lastModified,
+			});
+
 			backgroundImageData.value = file;
 			let reader = new FileReader();
 			reader.onload = function (event) {
@@ -185,41 +197,45 @@ export default {
 		};
 
 		const previewProfileImage = async event => {
-			const file = event.target.files[0];
-			// profileImageData.value = file;
-			// let reader = new FileReader();
-			// reader.onload = function (event) {
-			// 	profileImage.value.src = event.target.result;
-			// };
-			// reader.readAsDataURL(file);
+			let file = event.target.files[0];
+
+			file = new File([file], getImageName(), {
+				type: file.type,
+				lastModified: file.lastModified,
+			});
+			profileImageData.value = file;
+			let reader = new FileReader();
+			reader.onload = function (event) {
+				profileImage.value.src = event.target.result;
+			};
+			reader.readAsDataURL(file);
 			console.log(file);
-			let formData = new FormData();
-			formData.append('audio', file);
-			for (let key of formData.entries()) {
-				console.log(`${key}`);
-			}
-			let temp = await saveAudio(formData);
-			console.log(temp.data);
 		};
 
 		const onSaveProfile = async () => {
-			// let data = await updateUserInfo(currentUser.value);
-			// store.state.user = data.data;
-			// currentUser.value = data.data;
+			if (profileImageData.value) {
+				store.state.user.avatar = profileImageData.value.name;
+				let formData = new FormData();
+				formData.append('image', profileImageData.value);
+				saveImage(formData);
+			}
+			if (backgroundImageData.value) {
+				store.state.user.background = backgroundImageData.value.name;
+				let formData = new FormData();
+				formData.append('image', backgroundImageData.value);
+				saveImage(formData);
+			}
 
-			let date = new Date();
-			let fullDate = `${store.state.user.username}.${date.getFullYear()}-${
-				date.getMonth() + 1
-			}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.wav`;
+			let data = await updateUserInfo(store.state.user);
+			store.state.user = data.data;
+			store.state.user.avatar = `http://localhost:88/image/${store.state.user.avatar}`;
+			store.state.user.background = `http://localhost:88/image/${store.state.user.background}`;
 
-			let temp = await saveAudio(data);
-			console.log(temp.data);
 			emit('close-modal');
 		};
 
 		return {
 			tweetBody,
-			currentUser,
 			onChangeBackgroundImage,
 			onChangeProfileImage,
 			previewBackgroundImage,

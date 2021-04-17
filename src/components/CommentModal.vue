@@ -43,7 +43,7 @@
 					<div class="flex px-4 pt-4 pb-3">
 						<div class="flex flex-col">
 							<img
-								:src="tweet.avatar"
+								:src="tweet.user.avatar"
 								class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 							/>
 							<div class="ml-5 w-0.5 h-full bg-gray-300 mt-2 -mb-1"></div>

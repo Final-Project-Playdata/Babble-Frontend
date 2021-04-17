@@ -200,9 +200,12 @@ export default {
 
 			let data = await getUser(id);
 			profileUser.value = data.data;
+			profileUser.value.avatar = `http://localhost:88/image/${profileUser.value.avatar}`;
+			profileUser.value.background = `http://localhost:88/image/${profileUser.value.background}`;
 
 			let data1 = await getPostList(id);
 			data1.data.forEach(post => {
+				post.user.avatar = `http://localhost:88/image/${post.user.avatar}`;
 				if (post.retweetPostId !== null) {
 					reTweets.value.push(post);
 					console.log(post, 'retweet');
@@ -220,6 +223,10 @@ export default {
 
 			let data4 = await getLikePostList(id);
 			likeTweets.value = data4.data;
+			likeTweets.value.forEach(likeTweet => {
+				console.log(likeTweet.user);
+				likeTweet.user.avatar = `http://localhost:88/image/${likeTweet.user.avatar}`;
+			});
 		});
 
 		const onFollow = async () => {

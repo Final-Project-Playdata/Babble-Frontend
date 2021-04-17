@@ -22,4 +22,10 @@ function saveAudio(formData) {
 	});
 }
 
-export { getAudio, getImage, saveAudio };
+function saveImage(formData) {
+	return fluxInstance.post('image', formData, config).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+export { getAudio, getImage, saveAudio, saveImage };

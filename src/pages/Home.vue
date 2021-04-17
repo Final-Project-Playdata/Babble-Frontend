@@ -7,7 +7,7 @@
 			<!-- tweeting section -->
 			<div class="flex px-3 py-3 border-b-8 border-gray-100">
 				<img
-					:src="currentUser.profile_image_url"
+					:src="$store.state.user.avatar"
 					class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 				/>
 				<div class="ml-2 flex-1 flex flex-col">
@@ -54,10 +54,21 @@ import Trends from '../components/Trends.vue';
 import Tweet from '../components/Tweet.vue';
 import { ref, computed, onBeforeMount } from 'vue';
 import store from '../store';
-import { getPostList, insertPost } from '../api/babble';
+import { getPostList, insertPost, getPostListWithTag } from '../api/babble';
+import { useRoute } from 'vue-router';
 
 export default {
 	components: { Trends, Tweet },
+	watch: {
+		async '$route.params.tag'(val) {
+			console.log(val);
+			let data = await getPostListWithTag(val);
+			this.tweets = data.data;
+			this.tweets.forEach(tweet => {
+				tweet.user.avatar = `http://localhost:88/image/${tweet.user.avatar}`;
+			});
+		},
+	},
 	methods: {
 		deleteTweet(tweet) {
 			this.tweets = this.tweets.filter(t => t !== tweet);
@@ -66,28 +77,33 @@ export default {
 			this.tweets = this.tweets.filter(t => t.id !== tweetId);
 		},
 		addRetweet(tweet) {
-      this.tweets.push(tweet);
+			this.tweets.push(tweet);
 		},
 	},
 	setup() {
 		const tweetBody = ref('');
 		const currentUser = computed(() => store.state.user);
 		const tweets = ref([]);
+		const route = useRoute();
 
 		onBeforeMount(async () => {
 			const response = await getPostList();
 			tweets.value = response.data;
+			tweets.value.forEach(tweet => {
+				tweet.user.avatar = `http://localhost:88/image/${tweet.user.avatar}`;
+			});
 		});
 
 		const onAddTweet = async () => {
 			try {
 				const data = {
-					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
+					fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
 					duration: '26.3',
 					tagList: ['test1', 'test2', 'test3'],
 				};
-				let temp = await insertPost(data);
 				tweetBody.value = '';
+				let temp = await insertPost(data);
+				temp.data.user.avatar = `http://localhost:88/image/${temp.data.user.avatar}`;
 				tweets.value.push(temp.data);
 			} catch (e) {
 				console.log('on add tweet error on homepage:', e);

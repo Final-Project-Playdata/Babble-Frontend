@@ -1,5 +1,5 @@
 <template>
-	<div @click="play()">audioPlayer</div>
+	<div @click="play()">Listen</div>
 </template>
 <script>
 export default {
@@ -15,7 +15,7 @@ export default {
 		async play() {
 			if (!this.isLoaded) {
 				this.audio = new Audio(
-					`http://localhost:88/audio/${this.audioUrl.replaceAll('/', '-')}`
+					`http://localhost:88/audio/${this.audioUrl}`
 				);
 				this.isLoaded = true;
 			}

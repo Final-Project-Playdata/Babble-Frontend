@@ -62,8 +62,14 @@ function insertRetweetPost(post) {
 	});
 }
 
-function getUser() {
-	return mvcInstance.get('user').catch(err => {
+function getUser(id) {
+	return mvcInstance.get(`user/${id}`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function getMyInfo() {
+	return mvcInstance.get('my').catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
@@ -75,9 +81,11 @@ function insertComment(postId, comment) {
 }
 
 function deleteComment(postId, commentId) {
-	return mvcInstance.delete(`post/${postId}/comment/${commentId}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	return mvcInstance
+		.delete(`post/${postId}/comment/${commentId}`)
+		.catch(err => {
+			store.state.error = err.toString().slice(-3);
+		});
 }
 
 function deleteCommentList(id) {
@@ -164,4 +172,5 @@ export {
 	getFollowerList,
 	getFollowingList,
 	getLikePostList,
+	getMyInfo,
 };

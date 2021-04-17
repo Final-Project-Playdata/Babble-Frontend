@@ -18,8 +18,7 @@ const routes = [
 		meta: { isMenu: true, layout: 'DefaultLayout', requireAuth: true },
 	},
 	{
-		path: '/',
-		name: 'explore',
+		path: '/:tag',
 		component: Home,
 		title: '탐색하기',
 		icon: 'fas fa-hashtag fa-fw text-2xl',

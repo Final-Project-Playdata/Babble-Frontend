@@ -25,8 +25,11 @@ const store = createStore({
 		SET_UN_FOLLOW: (state, uid) => {
 			state.user.followings = state.user.followings.filter(u => u !== uid);
 		},
-    setToken(state, token) {
+		SET_TOKEN(state, token) {
 			state.token = token;
+		},
+		CLEAR_TOKEN(state) {
+			state.token = '';
 		},
 	},
 	plugins: [createPersistedState()],

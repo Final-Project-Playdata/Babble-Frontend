@@ -43,7 +43,7 @@
 					class="hidden xl:flex mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 items-center"
 				>
 					<img
-						:src="currentUser.avatar"
+						:src="$store.state.user.avatar"
 						class="w-10 h-10 rounded-full"
 					/>
 					<div class="xl:ml-2 hidden xl:block">
@@ -57,10 +57,10 @@
 					></i>
 				</button>
 				<div class="xl:hidden flex justify-center">
-					<img
+					<!-- <img
 						:src="currentUser.avatar"
 						class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
-					/>
+					/> -->
 				</div>
 			</div>
 		</div>
@@ -77,10 +77,10 @@
 			<button
 				class="hover:bg-gray-50 border-b border-gray-100 flex p-3 w-full items-center"
 			>
-				<img
+				<!-- <img
 					:src="currentUser.avatar"
 					class="w-10 h-10 rounded-full"
-				/>
+				/> -->
 				<div class="ml-2">
 					<div class="font-bold text-sm">{{ currentUser.email }}</div>
 					<div class="text-left text-gray-500 text-sm">
@@ -130,6 +130,7 @@ export default {
 		const onLogout = async () => {
 			await auth.signOut();
 			store.commit('SET_USER', null);
+			store.commit('CLEAR_TOKEN');
 			await router.replace('/login');
 		};
 

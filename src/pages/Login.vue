@@ -1,11 +1,11 @@
 <template>
 	<div class="flex flex-col items-center space-y-4 mt-10">
-		<i
-			:class="`fab fa-twitter text-4xl text-primary ${
-				loading ? 'animate-bounce' : ''
-			}`"
-		></i>
-		<span class="text-2xl font-bold">뜨위떠 로그인</span>
+		<img
+			src="../logo/5.jpg"
+			width="200"
+			height="200"
+			class="text-4xl text-primary"
+		/>
 		<input
 			v-model="email"
 			type="text"
@@ -37,11 +37,10 @@
 
 <script>
 import { ref, onMounted } from 'vue';
-import { auth, USER_COLEECTION } from '../firebase';
 import { useRouter } from 'vue-router';
 import store from '../store/index';
 import { signIn } from '../api/auth';
-import { getUser } from '../api/babble';
+import { getMyInfo } from '../api/babble';
 
 export default {
 	setup() {
@@ -65,9 +64,12 @@ export default {
 				const data = await signIn(userData);
 
 				// get user info
-        await store.commit('setToken', data.headers['authorization']);
-        const doc = await getUser();
-        
+				await store.commit('SET_TOKEN', data.headers['authorization']);
+				const doc = await getMyInfo();
+
+				doc.data.avatar = `http://localhost:88/image/${doc.data.avatar}`;
+				doc.data.background = `http://localhost:88/image/${doc.data.background}`;
+
 				store.commit('SET_USER', doc.data);
 				router.replace('/');
 			} catch (e) {
