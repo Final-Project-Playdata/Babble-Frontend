@@ -4,44 +4,25 @@
 		<div class="flex flex-col">
 			<!-- page title -->
 			<div class="border-b border-gray-100 px-3 py-2 font-bold text-lg">홈</div>
-			<!-- tweeting section -->
+			<!-- babbleing section -->
 			<div class="flex px-3 py-3 border-b-8 border-gray-100">
 				<img
 					:src="$store.state.user.avatar"
 					class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 				/>
 				<div class="ml-2 flex-1 flex flex-col">
-					<textarea
-						v-model="tweetBody"
-						placeholder="무슨 일이 일어나고 있나요?"
-						class="w-full text-lg font-bold focus:outline-none mb-3 resize-none"
-					></textarea>
-					<div class="text-right">
-						<button
-							v-if="!tweetBody.length"
-							class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
-						>
-							트윗
-						</button>
-						<button
-							v-else
-							@click="onAddTweet"
-							class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
-						>
-							트윗
-						</button>
-					</div>
+					<audio-recorder @insert-babble="insertNewBabble" />
 				</div>
 			</div>
-			<!-- tweets -->
-			<Tweet
+			<!-- babbles -->
+			<Babble
 				:currentUser="currentUser"
-				:tweet="tweet"
-				v-for="tweet in tweets"
-				:key="tweet.id"
-				@delete="deleteTweet"
-				@unretweet="deleteRetweet"
-				@retweet="addRetweet"
+				:babble="babble"
+				v-for="babble in babbles"
+				:key="babble.id"
+				@delete="onDeleteBabble"
+				@unrebabble="onDeleteRebabble"
+				@rebabble="oninsertRebabble"
 			/>
 		</div>
 	</div>
@@ -51,66 +32,50 @@
 
 <script>
 import Trends from '../components/Trends.vue';
-import Tweet from '../components/Tweet.vue';
+import Babble from '../components/Babble.vue';
 import { ref, computed, onBeforeMount } from 'vue';
 import store from '../store';
-import { getPostList, insertPost, getPostListWithTag } from '../api/babble';
-import { useRoute } from 'vue-router';
+import { getBabbles, getBabblesWithTag } from '../api/babble';
+import AudioRecorder from '../components/audioRecorder/recorder.vue';
 
 export default {
-	components: { Trends, Tweet },
+	components: { Trends, Babble, AudioRecorder },
 	watch: {
 		async '$route.params.tag'(val) {
-			console.log(val);
-			let data = await getPostListWithTag(val);
-			this.tweets = data.data;
-			this.tweets.forEach(tweet => {
-				tweet.user.avatar = `http://localhost:88/image/${tweet.user.avatar}`;
+			let data = await getBabblesWithTag(val);
+			this.babbles = data.data;
+			this.babbles.forEach(babble => {
+				babble.user.avatar = `http://localhost:88/image/${babble.user.avatar}`;
 			});
 		},
 	},
 	methods: {
-		deleteTweet(tweet) {
-			this.tweets = this.tweets.filter(t => t !== tweet);
+		onDeleteBabble(babble) {
+			this.babbles = this.babbles.filter(t => t !== babble);
 		},
-		deleteRetweet(tweetId) {
-			this.tweets = this.tweets.filter(t => t.id !== tweetId);
+		onDeleteRebabble(babbleId) {
+			this.babbles = this.babbles.filter(t => t.id !== babbleId);
 		},
-		addRetweet(tweet) {
-			this.tweets.push(tweet);
+		oninsertRebabble(babble) {
+			this.babbles.push(babble);
+		},
+		insertNewBabble: function (babble) {
+			this.babbles.push(babble);
 		},
 	},
 	setup() {
-		const tweetBody = ref('');
 		const currentUser = computed(() => store.state.user);
-		const tweets = ref([]);
-		const route = useRoute();
+		const babbles = ref([]);
 
 		onBeforeMount(async () => {
-			const response = await getPostList();
-			tweets.value = response.data;
-			tweets.value.forEach(tweet => {
-				tweet.user.avatar = `http://localhost:88/image/${tweet.user.avatar}`;
+			const response = await getBabbles();
+			babbles.value = response.data;
+			babbles.value.forEach(babble => {
+				babble.user.avatar = `http://localhost:88/image/${babble.user.avatar}`;
 			});
 		});
 
-		const onAddTweet = async () => {
-			try {
-				const data = {
-					fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
-					duration: '26.3',
-					tagList: ['test1', 'test2', 'test3'],
-				};
-				tweetBody.value = '';
-				let temp = await insertPost(data);
-				temp.data.user.avatar = `http://localhost:88/image/${temp.data.user.avatar}`;
-				tweets.value.push(temp.data);
-			} catch (e) {
-				console.log('on add tweet error on homepage:', e);
-			}
-		};
-
-		return { currentUser, tweetBody, onAddTweet, tweets };
+		return { currentUser, babbles };
 	},
 };
 </script>

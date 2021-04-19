@@ -6,12 +6,17 @@ const store = createStore({
 		return {
 			user: null,
 			error: 200,
-			token: '',
+			token: null,
+			followers: null,
+			followings: null,
 		};
 	},
 	mutations: {
 		SET_USER: (state, user) => {
 			state.user = user;
+		},
+		CLEAR_USER: state => {
+			state.user = null;
 		},
 		SET_BACKGROUND_IMAGE: (state, image) => {
 			state.user.background_image_url = image;
@@ -29,7 +34,13 @@ const store = createStore({
 			state.token = token;
 		},
 		CLEAR_TOKEN(state) {
-			state.token = '';
+			state.token = null;
+		},
+		SET_FOLLOWERS(state, followers) {
+			state.followers = followers;
+		},
+		SET_FOLLOWINGS(state, followings) {
+			state.followings = followings;
 		},
 	},
 	plugins: [createPersistedState()],

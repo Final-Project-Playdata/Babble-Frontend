@@ -21,17 +21,17 @@
 						@click="$emit('close-modal')"
 						class="fas fa-times text-primary text-lg p-2 h-10 w-10 hover:bg-blue-50 rounded-full"
 					></button>
-					<!-- tweet button -->
+					<!-- babble button -->
 					<div class="text-right sm:hidden mr-2">
 						<button
-							v-if="!tweetBody.length"
+							v-if="!babbleBody.length"
 							class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
 						>
 							답글
 						</button>
 						<button
 							v-else
-							@click="onCommentTweet"
+							@click="onCommentBabble"
 							class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
 						>
 							답글
@@ -39,30 +39,34 @@
 					</div>
 				</div>
 				<div>
-					<!-- original tweet -->
+					<!-- original babble -->
 					<div class="flex px-4 pt-4 pb-3">
 						<div class="flex flex-col">
 							<img
-								:src="tweet.user.avatar"
+								:src="babble.user.avatar"
 								class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 							/>
 							<div class="ml-5 w-0.5 h-full bg-gray-300 mt-2 -mb-1"></div>
 						</div>
 						<div class="ml-2 flex-1">
 							<div class="flex space-x-2">
-								<span class="font-bold text-sm">{{ tweet.user.username }}</span>
-								<span class="text-gray text-sm">@{{ tweet.user.nickname }}</span>
+								<span class="font-bold text-sm">{{ babble.user.username }}</span>
+								<span class="text-gray text-sm"
+									>@{{ babble.user.nickname }}</span
+								>
 								<span class="text-gray text-sm">{{
-									moment(tweet.regDate).fromNow()
+									moment(babble.regDate).fromNow()
 								}}</span>
 							</div>
 							<div>
-								<span class="text-primary text-sm">@{{ tweet.user.nickname }}</span>
+								<span class="text-primary text-sm"
+									>@{{ babble.user.nickname }}</span
+								>
 								<span class="text-gray text-sm"> 님에게 보내는 답글</span>
 							</div>
 						</div>
 					</div>
-					<!-- tweeting section -->
+					<!-- babbleing section -->
 					<div class="flex px-4 pb-4">
 						<img
 							:src="currentUser.avatar"
@@ -70,22 +74,22 @@
 						/>
 						<div class="ml-2 flex-1 flex flex-col">
 							<textarea
-								v-model="tweetBody"
+								v-model="babbleBody"
 								rows="5"
 								placeholder="내 답글을 트윗합니다"
 								class="w-full text-lg font-bold focus:outline-none mb-3 resize-none"
 							></textarea>
-							<!-- tweet button -->
+							<!-- babble button -->
 							<div class="text-right hidden sm:block">
 								<button
-									v-if="!tweetBody.length"
+									v-if="!babbleBody.length"
 									class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
 								>
 									답글
 								</button>
 								<button
 									v-else
-									@click="onCommentTweet"
+									@click="onCommentBabble"
 									class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
 								>
 									답글
@@ -106,32 +110,32 @@ import store from '../store/index';
 import { insertComment } from '../api/babble';
 
 export default {
-	props: ['tweet'],
+	props: ['babble'],
 	setup(props, { emit }) {
-		const tweetBody = ref('');
+		const babbleBody = ref('');
 		const currentUser = computed(() => store.state.user);
 
-		const onCommentTweet = async () => {
+		const onCommentBabble = async () => {
 			try {
-				console.log(props.tweet.id);
+				console.log(props.babble.id);
 				const data = {
 					post: {
-						id: props.tweet.id,
+						id: props.babble.id,
 					},
 					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
 				};
-				let temp = await insertComment(props.tweet.id, data);
+				let temp = await insertComment(props.babble.id, data);
 				emit('close-modal', temp.data);
 			} catch (e) {
-				console.log('on comment tweet error:', e);
+				console.log('on comment babble error:', e);
 			}
 		};
 
 		return {
-			tweetBody,
+			babbleBody,
 			moment,
 			currentUser,
-			onCommentTweet,
+			onCommentBabble,
 		};
 	},
 };

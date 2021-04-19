@@ -46,28 +46,10 @@
 						class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 					/>
 					<div class="ml-2 flex-1 flex flex-col">
-						<textarea
-							v-model="tweetBody"
-							rows="5"
-							placeholder="무슨 일이 일어나고 있나요?"
-							class="w-full text-lg font-bold focus:outline-none mb-3 resize-none"
-						></textarea>
-						<!-- tweet button -->
-						<div class="text-right hidden sm:block">
-							<button
-								v-if="!tweetBody.length"
-								class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
-							>
-								트윗
-							</button>
-							<button
-								v-else
-								@click="onAddTweet"
-								class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
-							>
-								트윗
-							</button>
-						</div>
+						<audio-recorder
+							@close-modal="closeModal"
+							@insert-babble="insertNewBabble"
+						/>
 					</div>
 				</div>
 			</div>
@@ -78,32 +60,21 @@
 <script>
 import { ref, computed } from 'vue';
 import store from '../store';
-import { insertPost } from '../api/babble';
-
+import AudioRecorder from './audioRecorder/recorder.vue';
 export default {
+	components: { AudioRecorder },
 	setup(props, { emit }) {
 		const tweetBody = ref('');
 		const currentUser = computed(() => store.state.user);
-		const onAddTweet = async () => {
-			try {
-				const data = {
-					fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
-					duration: '26.3',
-					tagList: ['test1', 'test2', 'test3'],
-				};
-				let temp = await insertPost(data);
-				tweetBody.value = '';
-				console.log(temp.data);
-				emit('close-modal', temp.data);
-			} catch (e) {
-				console.log('on add tweet error on homepage:', e);
-			}
+
+		const closeModal = () => {
+			emit('close-modal');
 		};
 
 		return {
 			tweetBody,
-			onAddTweet,
 			currentUser,
+			closeModal,
 		};
 	},
 };

@@ -36,13 +36,15 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import store from '../store/index';
 import { signIn } from '../api/auth';
-import { getMyInfo } from '../api/babble';
+import { getMyInfo, getFollowers, getFollowings } from '../api/babble';
+import AudioRecorder from '../components/audioRecorder/recorder.vue';
 
 export default {
+	components: { AudioRecorder },
 	setup() {
 		const email = ref('');
 		const password = ref('');
@@ -70,7 +72,12 @@ export default {
 				doc.data.avatar = `http://localhost:88/image/${doc.data.avatar}`;
 				doc.data.background = `http://localhost:88/image/${doc.data.background}`;
 
+				let followers = await getFollowers(doc.data.id);
+				let followings = await getFollowings(doc.data.id);
+
 				store.commit('SET_USER', doc.data);
+				store.commit('SET_FOLLOWERS', followers.data);
+				store.commit('SET_FOLLOWINGS', followings.data);
 				router.replace('/');
 			} catch (e) {
 				switch (e.code) {

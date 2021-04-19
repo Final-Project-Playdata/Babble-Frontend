@@ -57,11 +57,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { signUp } from '../api/auth.js';
-import {
-	validateEmail,
-	validatePhoneNumber,
-	validateBirth,
-} from '../utils/validation.js';
+import { validateEmail } from '../utils/validation.js';
 
 export default {
 	setup() {

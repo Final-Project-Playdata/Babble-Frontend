@@ -1,7 +1,7 @@
 <template>
 	<div class="flex-1 flex">
 		<div class="flex-1 border-r border-gray-100">
-			<div class="flex flex-col" v-if="tweet">
+			<div class="flex flex-col" v-if="babble">
 				<!-- title -->
 				<div class="flex items-center px-3 py-2 border-b border-gray-100">
 					<button @click="router.go(-1)">
@@ -11,30 +11,30 @@
 					</button>
 					<span class="font-bold text-lg ml-6">트윗</span>
 				</div>
-				<!-- tweet -->
+				<!-- babble -->
 				<div class="px-3 py-2 flex">
 					<img
-						:src="tweet.avatar"
+						:src="babble.user.avatar"
 						class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"
 					/>
 					<div class="ml-2">
-						<div class="font-bold">{{ tweet.user.username }}</div>
-						<div class="text-gray text-sm">@{{ tweet.user.nickname }}</div>
+						<div class="font-bold">{{ babble.user.username }}</div>
+						<div class="text-gray text-sm">@{{ babble.user.nickname }}</div>
 					</div>
 				</div>
 				<detail-audio-player
 					class="px-3 py-2"
-					:audioUrl="tweet.fileUrl"
+					:audioUrl="babble.fileUrl"
 					playerid="audio-player"
 				></detail-audio-player>
 				<div class="px-3 py-2 text-gray text-xs">
-					{{ moment(tweet.regDate).fromNow() }}
+					{{ moment(babble.regDate).fromNow() }}
 				</div>
 				<div class="h-px w-full bg-gray-100"></div>
 				<div class="flex space-x-2 px-3 py-2 items-center">
-					<span class="">{{ tweet.retweetList.length }}</span>
-					<span class="text-sm text-gray">리트윗</span>
-					<span class="ml-5">{{ tweet.likeList.length }}</span>
+					<span class="">{{ babble.rebabbles.length }}</span>
+					<span class="text-sm text-gray">리배블</span>
+					<span class="ml-5">{{ babble.likes.length }}</span>
 					<span class="text-sm text-gray">마음에 들어요</span>
 				</div>
 				<div class="h-px w-full bg-gray-100"></div>
@@ -45,17 +45,17 @@
 							class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full h-10 w-10"
 						></i>
 					</button>
-					<button @click="handleRetweet(tweet.id)">
+					<button @click="onRebabble(babble.id)">
 						<i
-							v-if="isRetweeted"
-							class="fas fa-retweet text-xl hover:bg-green-50 text-green-400 p-2 rounded-full h-10 w-10"
+							v-if="isRebabbled"
+							class="fas fa-rebabble text-xl hover:bg-green-50 text-green-400 p-2 rounded-full h-10 w-10"
 						></i>
 						<i
 							v-else
-							class="fas fa-retweet text-gray-400 text-xl hover:bg-green-50 hover:text-green-400 p-2 rounded-full h-10 w-10"
+							class="fas fa-rebabble text-gray-400 text-xl hover:bg-green-50 hover:text-green-400 p-2 rounded-full h-10 w-10"
 						></i>
 					</button>
-					<button @click="handleLikes(tweet.id)">
+					<button @click="handleLikes(babble.id)">
 						<i
 							v-if="this.isLiked"
 							class="far fa-heart text-xl hover:bg-red-50 text-red-400 p-2 rounded-full h-10 w-10"
@@ -69,7 +69,7 @@
 				<div class="h-px w-full bg-gray-100"></div>
 				<!-- comments -->
 				<div
-					v-for="comment in tweet.commentList"
+					v-for="comment in babble.comments"
 					:key="comment"
 					class="flex hover:bg-gray-50 cursor-pointer px-3 py-3 border-b border-gray-100"
 				>
@@ -85,10 +85,13 @@
 							>
 							<span>{{ moment(comment.regDate).fromNow() }}</span>
 						</div>
-						<audio-player class="px-3 py-2" :audioUrl="tweet.fileUrl"></audio-player>
+						<audio-player
+							class="px-3 py-2"
+							:audioUrl="babble.fileUrl"
+						></audio-player>
 					</div>
 					<button
-						@click="handleDeleteComment(comment.id)"
+						@click="onDeleteComment(comment.id)"
 						v-if="comment.user.id === currentUser.id"
 					>
 						<i
@@ -100,9 +103,9 @@
 		</div>
 		<trends></trends>
 		<comment-modal
-			:tweet="tweet"
+			:babble="babble"
 			v-if="showCommentModal"
-			@close-modal="addComment"
+			@close-modal="onAddComment"
 		></comment-modal>
 	</div>
 </template>
@@ -118,64 +121,64 @@ import CommentModal from '../components/CommentModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import DetailAudioPlayer from '../components/DetailAudioPlayer.vue';
 import {
-	getPost,
+	getBabble,
 	deleteComment,
 	like,
 	unlike,
-	deletePost,
-	insertRetweetPost,
+	deleteBabble,
+	insertRebabble,
 } from '../api/babble';
 
 export default {
 	components: { Trends, CommentModal, AudioPlayer, DetailAudioPlayer },
 	data: function () {
 		return {
-			isRetweeted: false,
+			isRebabbled: false,
 			isLiked: false,
 		};
 	},
 	methods: {
-		addComment(comment) {
+		onAddComment(comment) {
 			this.showCommentModal = false;
 			if (comment) {
-				this.tweet.commentList.push(comment);
+				this.babble.comments.push(comment);
 			}
 		},
-		handleDeleteComment(commentId) {
+		onDeleteComment(commentId) {
 			if (confirm('정말로 답글을 삭제하시겠습니까?')) {
-				deleteComment(this.tweet.id, commentId);
-				this.tweet.commentList = this.tweet.commentList.filter(
+				deleteComment(this.babble.id, commentId);
+				this.babble.comments = this.babble.comments.filter(
 					c => c.id !== commentId
 				);
 			}
 		},
-		handleRetweet(tweetId) {
-			if (this.isRetweeted) {
-				deletePost(tweetId);
-				this.isRetweeted = false;
+		onRebabble(babbleId) {
+			if (this.isRebabbled) {
+				deleteBabble(babbleId);
+				this.isRebabbled = false;
 			} else {
 				const data = {
 					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
 					duration: '26.3',
-					tagList: ['test1', 'test2', 'test3'],
-					retweetPostId: tweetId,
+					tags: ['test1', 'test2', 'test3'],
+					rebabbleId: babbleId,
 				};
-				insertRetweetPost(data);
-				this.isRetweeted = true;
+				insertRebabble(data);
+				this.isRebabbled = true;
 			}
 		},
-		handleLikes(tweetId) {
+		handleLikes(babbleId) {
 			if (this.isLiked) {
-				unlike(tweetId);
+				unlike(babbleId);
 				this.isLiked = false;
 			} else {
-				like(tweetId);
+				like(babbleId);
 				this.isLiked = true;
 			}
 		},
 	},
 	setup() {
-		const tweet = ref(null);
+		const babble = ref(null);
 		const comments = ref([]);
 		const currentUser = computed(() => store.state.user);
 		const showCommentModal = ref(false);
@@ -183,17 +186,21 @@ export default {
 		const route = useRoute();
 
 		onBeforeMount(async () => {
-			let data = await getPost(route.params.id);
-			tweet.value = data.data;
-			tweet.value.avatar = `http://localhost:88/image/${tweet.value.avatar}`;
+			let data = await getBabble(route.params.id);
+			babble.value = data.data;
+			babble.value.user.avatar = `http://localhost:88/image/${babble.value.user.avatar}`;
+
+			babble.value.comments.forEach(comment => {
+				comment.user.avatar = `http://localhost:88/image/${comment.user.avatar}`;
+			});
 		});
 		return {
-			router,
-			tweet,
-			comments,
-			currentUser,
-			moment,
 			showCommentModal,
+			currentUser,
+			comments,
+			router,
+			babble,
+			moment,
 		};
 	},
 };

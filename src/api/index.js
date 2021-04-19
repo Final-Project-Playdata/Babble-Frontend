@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { setInterceptors } from './interceptors';
 
-function createInstance() {
+function createInstance(url) {
 	return axios.create({
-		baseURL: 'http://localhost:80',
+		baseURL: url,
 	});
 }
 
@@ -15,6 +15,7 @@ function createInstanceWithAuth(url) {
 	return setInterceptors(instance);
 }
 
-export const instance = createInstance();
+export const instance = createInstance('http://localhost:80');
+export const flaskInstance = createInstance('http://localhost:5000');
 export const mvcInstance = createInstanceWithAuth('http://localhost:80');
 export const fluxInstance = createInstanceWithAuth('http://localhost:88');

@@ -11,7 +11,7 @@
 				</button>
 				<div>
 					<div class="font-extrabold text-lg">{{ profileUser.username }}</div>
-					<div class="text-xs text-gray">{{ tweets.length }} 트윗</div>
+					<div class="text-xs text-gray">{{ babbles.length }} 트윗</div>
 				</div>
 			</div>
 			<!-- background image -->
@@ -38,11 +38,7 @@
 					</button>
 				</div>
 				<div v-else>
-					<div
-						v-if="followings.includes(profileUser)"
-						class=""
-						@click="onUnFollow"
-					>
+					<div v-if="isFollowed" class="" @click="onUnFollow">
 						<button
 							class="absolute w-24 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full"
 						>
@@ -86,24 +82,24 @@
 			<!-- tabs -->
 			<div class="flex border-b border-color mt-3">
 				<div
-					@click="currentTab = 'tweet'"
+					@click="currentTab = 'babble'"
 					:class="`${
-						currentTab == 'tweet'
+						currentTab == 'babble'
 							? 'border-b border-primary text-primary'
 							: ' text-gray'
 					} py-3  font-bold  text-center w-1/3 hover:bg-blue-50 cursor-pointer hover:text-primary`"
 				>
-					트윗
+					배블
 				</div>
 				<div
-					@click="currentTab = 'retweet'"
+					@click="currentTab = 'rebabble'"
 					:class="`${
-						currentTab == 'retweet'
+						currentTab == 'rebabble'
 							? 'border-b border-primary text-primary'
 							: ' text-gray'
 					} py-3  font-bold  text-center w-1/3 hover:bg-blue-50 cursor-pointer hover:text-primary`"
 				>
-					리트윗
+					리배블
 				</div>
 				<div
 					@click="currentTab = 'like'"
@@ -116,20 +112,20 @@
 					좋아요
 				</div>
 			</div>
-			<!-- tweets -->
+			<!-- babbles -->
 			<div class="overflow-y-auto">
-				<Tweet
-					v-for="tweet in currentTab == 'tweet'
-						? tweets
-						: currentTab == 'retweet'
-						? reTweets
-						: likeTweets"
-					:key="tweet.id"
+				<Babble
+					v-for="babble in currentTab == 'babble'
+						? babbles
+						: currentTab == 'rebabble'
+						? rebabbles
+						: likeBabbles"
+					:key="babble.id"
 					:currentUser="currentUser"
-					:tweet="tweet"
-					@delete="deleteTweet"
-					@unretweet="deleteRetweet"
-					@retweet="addRetweet"
+					:babble="babble"
+					@delete="deleteBabble"
+					@unrebabble="deleteRebabble"
+					@rebabble="addRebabble"
 				/>
 			</div>
 		</div>
@@ -144,7 +140,7 @@
 
 <script>
 import Trends from '../components/Trends.vue';
-import Tweet from '../components/Tweet.vue';
+import Babble from '../components/Babble.vue';
 import store from '../store';
 import { computed, ref, onBeforeMount } from 'vue';
 import moment from 'moment';
@@ -153,44 +149,59 @@ import router from '../router';
 import ProfileEditModal from '../components/ProfileEditModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
 import {
-	getPostList,
+	getBabblesWithId,
 	getUser,
 	follow,
 	unfollow,
-	getFollowerList,
-	getFollowingList,
-	getLikePostList,
+	getFollowers,
+	getFollowings,
+	getLikeBabbles,
 } from '../api/babble';
 
 export default {
-	components: { Trends, Tweet, ProfileEditModal, AudioPlayer },
+	components: { Trends, Babble, ProfileEditModal, AudioPlayer },
 	methods: {
-		deleteTweet(tweet) {
-			this.tweets = this.tweets.filter(t => t !== tweet);
+		deleteBabble(babble) {
+			this.babbles = this.babbles.filter(t => t !== babble);
 		},
-		deleteRetweet(tweetId) {
-			this.reTweets = this.reTweets.filter(t => t.id !== tweetId);
+		deleteRebabble(babbleId) {
+			this.rebabbles = this.rebabbles.filter(t => t.id !== babbleId);
 		},
-		addRetweet(tweet) {
-			this.reTweets.push(tweet);
-		},
-		editProfileUser(data) {
-			if (data) {
-				this.profileUser = data;
-				this.currentUser = data;
+		addRebabble(babble) {
+			if (this.profileUser.id === this.currentUser.id) {
+				this.rebabbles.push(babble);
 			}
+		},
+		editProfileUser() {
 			this.showProfileEditModal = false;
+			window.location.reload();
+		},
+	},
+	computed: {
+		isFollowed() {
+			let status = false;
+			this.followers.forEach(user => {
+				if (user.id === this.currentUser.id) {
+					status = true;
+				}
+			});
+			return status;
+		},
+	},
+	watch: {
+		'$route.params.id'(val) {
+			window.location.reload();
 		},
 	},
 	setup() {
 		const currentUser = computed(() => store.state.user);
 		const profileUser = ref(null);
-		const tweets = ref([]);
-		const reTweets = ref([]);
-		const likeTweets = ref([]);
+		const babbles = ref([]);
+		const rebabbles = ref([]);
+		const likeBabbles = ref([]);
 		const followings = ref([]);
 		const followers = ref([]);
-		const currentTab = ref('tweet');
+		const currentTab = ref('babble');
 		const route = useRoute();
 
 		const showProfileEditModal = ref(false);
@@ -198,51 +209,56 @@ export default {
 		onBeforeMount(async () => {
 			const id = route.params.id ?? currentUser.value.id;
 
-			let data = await getUser(id);
-			profileUser.value = data.data;
-			profileUser.value.avatar = `http://localhost:88/image/${profileUser.value.avatar}`;
-			profileUser.value.background = `http://localhost:88/image/${profileUser.value.background}`;
+			let user = await getUser(id);
+			user.data.avatar = `http://localhost:88/image/${user.data.avatar}`;
+			user.data.background = `http://localhost:88/image/${user.data.background}`;
+			profileUser.value = user.data;
 
-			let data1 = await getPostList(id);
-			data1.data.forEach(post => {
-				post.user.avatar = `http://localhost:88/image/${post.user.avatar}`;
-				if (post.retweetPostId !== null) {
-					reTweets.value.push(post);
-					console.log(post, 'retweet');
+			if(profileUser.value.id === currentUser.value.id){
+				store.commit('SET_USER', user.data);
+			}
+
+			let babble = await getBabblesWithId(id);
+			babble.data.forEach(babble => {
+				babble.user.avatar = `http://localhost:88/image/${babble.user.avatar}`;
+				if (babble.rebabbleId !== null) {
+					rebabbles.value.push(babble);
 				} else {
-					tweets.value.push(post);
-					console.log(post, 'tweet');
+					babbles.value.push(babble);
 				}
 			});
 
-			let data2 = await getFollowingList(id);
-			followings.value = data2.data;
+			let followings = await getFollowings(id);
+			followings.value = followings.data;
 
-			let data3 = await getFollowerList(id);
-			followers.value = data3.data;
+			let followers = await getFollowers(id);
+			followers.value = followers.data;
 
-			let data4 = await getLikePostList(id);
-			likeTweets.value = data4.data;
-			likeTweets.value.forEach(likeTweet => {
-				console.log(likeTweet.user);
-				likeTweet.user.avatar = `http://localhost:88/image/${likeTweet.user.avatar}`;
+			let likes = await getLikeBabbles(id);
+			likeBabbles.value = likes.data;
+			likeBabbles.value.forEach(likeBabble => {
+				likeBabble.user.avatar = `http://localhost:88/image/${likeBabble.user.avatar}`;
 			});
 		});
 
-		const onFollow = async () => {
+		const onFollow = () => {
 			follow(profileUser.value.id);
+			followers.value.push(currentUser.value);
 		};
 
-		const onUnFollow = async () => {
+		const onUnFollow = () => {
 			unfollow(profileUser.value.id);
+			followers.value = followers.value.filter(
+				f => f.id !== currentUser.value.id
+			);
 		};
 
 		return {
 			currentUser,
 			profileUser,
-			tweets,
-			reTweets,
-			likeTweets,
+			babbles,
+			rebabbles,
+			likeBabbles,
 			moment,
 			currentTab,
 			router,

@@ -1,5 +1,5 @@
 <template>
-	<div @click="play()">Listen</div>
+	<div @click="play()">Listen Babble</div>
 </template>
 <script>
 export default {
@@ -11,12 +11,18 @@ export default {
 			audio: '',
 		};
 	},
+	watch: {
+		$route(to, from) {
+			if (this.audio) {
+				this.audio.pause();
+				this.audio = null;
+			}
+		},
+	},
 	methods: {
 		async play() {
 			if (!this.isLoaded) {
-				this.audio = new Audio(
-					`http://localhost:88/audio/${this.audioUrl}`
-				);
+				this.audio = new Audio(`http://localhost:88/audio/${this.audioUrl}`);
 				this.isLoaded = true;
 			}
 			if (!this.isPlaying) {

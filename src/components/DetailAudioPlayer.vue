@@ -117,12 +117,9 @@ export default {
 		const url = ref(null);
 
 		onBeforeMount(async () => {
-			url.value = `http://localhost:88/audio/${props.audioUrl.replaceAll(
-				'/',
-				'-'
-			)}`;
+			url.value = `http://localhost:88/audio/${props.audioUrl}`;
 		});
-    
+
 		return { url };
 	},
 	methods: {

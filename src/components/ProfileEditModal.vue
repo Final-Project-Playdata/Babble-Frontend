@@ -158,7 +158,6 @@ import { updateUserInfo } from '../api/auth.js';
 import { saveAudio, saveImage } from '../api/babbleSteam.js';
 export default {
 	setup(props, { emit }) {
-		const tweetBody = ref('');
 		const profileImage = ref(null);
 		const profileImageData = ref(null);
 		const backgroundImage = ref(null);
@@ -183,12 +182,11 @@ export default {
 		const previewBackgroundImage = event => {
 			let file = event.target.files[0];
 
-			file = new File([file], getImageName(), {
+			backgroundImageData.value = new File([file], getImageName(), {
 				type: file.type,
 				lastModified: file.lastModified,
 			});
 
-			backgroundImageData.value = file;
 			let reader = new FileReader();
 			reader.onload = function (event) {
 				backgroundImage.value.src = event.target.result;
@@ -199,43 +197,43 @@ export default {
 		const previewProfileImage = async event => {
 			let file = event.target.files[0];
 
-			file = new File([file], getImageName(), {
+			profileImageData.value = new File([file], getImageName(), {
 				type: file.type,
 				lastModified: file.lastModified,
 			});
-			profileImageData.value = file;
+
 			let reader = new FileReader();
 			reader.onload = function (event) {
 				profileImage.value.src = event.target.result;
 			};
 			reader.readAsDataURL(file);
-			console.log(file);
 		};
 
-		const onSaveProfile = async () => {
+		const onSaveProfile = () => {
+			let tempUser = store.state.user;
 			if (profileImageData.value) {
-				store.state.user.avatar = profileImageData.value.name;
+				tempUser.avatar = profileImageData.value.name;
 				let formData = new FormData();
 				formData.append('image', profileImageData.value);
 				saveImage(formData);
+			} else {
+				tempUser.avatar = tempUser.avatar.slice(26);
 			}
 			if (backgroundImageData.value) {
-				store.state.user.background = backgroundImageData.value.name;
+				tempUser.background = backgroundImageData.value.name;
 				let formData = new FormData();
 				formData.append('image', backgroundImageData.value);
 				saveImage(formData);
+			} else {
+				tempUser.background = tempUser.background.slice(26);
 			}
 
-			let data = await updateUserInfo(store.state.user);
-			store.state.user = data.data;
-			store.state.user.avatar = `http://localhost:88/image/${store.state.user.avatar}`;
-			store.state.user.background = `http://localhost:88/image/${store.state.user.background}`;
-
-			emit('close-modal');
+			console.log(tempUser);
+			updateUserInfo(tempUser);
+			// emit('close-modal');
 		};
 
 		return {
-			tweetBody,
 			onChangeBackgroundImage,
 			onChangeProfileImage,
 			previewBackgroundImage,

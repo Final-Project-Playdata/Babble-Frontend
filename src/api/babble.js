@@ -2,62 +2,68 @@
 import { mvcInstance } from './index';
 import store from '../store/index';
 
-function getTagsInPost(id) {
-	return mvcInstance.get(`/post/${id}/tags`).catch(err => {
+function getTagsInBabble(id) {
+	return mvcInstance.get(`/babble/${id}/tags`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function insertTagList(id, tagList) {
-	return mvcInstance.post(`/post/${id}/tags`, tagList).catch(err => {
+function insertTags(id, tags) {
+	return mvcInstance.post(`/babble/${id}/tags`, tags).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function updateTagList(id, tagList) {
-	return mvcInstance.put(`/post/${id}/tags`, tagList).catch(err => {
+function updateTags(id, tags) {
+	return mvcInstance.put(`/babble/${id}/tags`, tags).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function insertPost(post) {
-	return mvcInstance.post('post', post).catch(err => {
+function insertBabble(babble) {
+	return mvcInstance.post('babble', babble).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function deletePost(id) {
-	return mvcInstance.delete(`/post/${id}`).catch(err => {
+function deleteBabble(id) {
+	return mvcInstance.delete(`/babble/${id}`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function updatePost(id) {
-	return mvcInstance.put(`/post/${id}`).catch(err => {
+function updateBabble(id) {
+	return mvcInstance.put(`/babble/${id}`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function getPost(id) {
-	return mvcInstance.get(`/post/${id}`).catch(err => {
+function getBabble(id) {
+	return mvcInstance.get(`/babble/${id}`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function getPostList() {
-	return mvcInstance.get('posts').catch(err => {
+function getBabbles() {
+	return mvcInstance.get('babbles').catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function getPostListWithTag(tag) {
-	return mvcInstance.get(`posts/${tag}`).catch(err => {
+function getBabblesWithTag(tag) {
+	return mvcInstance.get(`babbles/${tag}`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function insertRetweetPost(post) {
-	return mvcInstance.post('retweet', post).catch(err => {
+function getBabblesWithId(id) {
+	return mvcInstance.get(`user/${id}/babbles`).catch(err => {
+		store.state.error = err.toString().slice(-3);
+	});
+}
+
+function insertRebabble(babble) {
+	return mvcInstance.post('rebabble', babble).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
@@ -74,46 +80,46 @@ function getMyInfo() {
 	});
 }
 
-function insertComment(postId, comment) {
-	return mvcInstance.post(`post/${postId}/comment`, comment).catch(err => {
+function insertComment(babbleId, comment) {
+	return mvcInstance.post(`babble/${babbleId}/comment`, comment).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function deleteComment(postId, commentId) {
+function deleteComment(babbleId, commentId) {
 	return mvcInstance
-		.delete(`post/${postId}/comment/${commentId}`)
+		.delete(`babble/${babbleId}/comment/${commentId}`)
 		.catch(err => {
 			store.state.error = err.toString().slice(-3);
 		});
 }
 
-function deleteCommentList(id) {
-	return mvcInstance.delete(`post/${id}/comments`).catch(err => {
+function deleteComments(id) {
+	return mvcInstance.delete(`babble/${id}/comments`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function deleteLikeList(id) {
-	return mvcInstance.delete(`post/${id}/likes`).catch(err => {
+function deleteLikes(id) {
+	return mvcInstance.delete(`babble/${id}/likes`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function deleteTagList(id) {
-	return mvcInstance.delete(`post/${id}/tags`).catch(err => {
+function deleteTags(id) {
+	return mvcInstance.delete(`babble/${id}/tags`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
 function like(id) {
-	return mvcInstance.post(`post/${id}/like`).catch(err => {
+	return mvcInstance.post(`babble/${id}/like`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
 function unlike(id) {
-	return mvcInstance.delete(`post/${id}/like`).catch(err => {
+	return mvcInstance.delete(`babble/${id}/like`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
@@ -130,47 +136,48 @@ function unfollow(id) {
 	});
 }
 
-function getFollowerList(id) {
+function getFollowers(id) {
 	return mvcInstance.get(`user/${id}/follower`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function getFollowingList(id) {
+function getFollowings(id) {
 	return mvcInstance.get(`user/${id}/following`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
-function getLikePostList(id) {
+function getLikeBabbles(id) {
 	return mvcInstance.get(`user/${id}/likes`).catch(err => {
 		store.state.error = err.toString().slice(-3);
 	});
 }
 
 export {
-	getTagsInPost,
-	insertTagList,
-	updateTagList,
-	insertPost,
-	deletePost,
-	updatePost,
-	getPost,
-	getPostList,
-	getPostListWithTag,
-	insertRetweetPost,
+	getTagsInBabble,
+	insertTags,
+	updateTags,
+	insertBabble,
+	deleteBabble,
+	updateBabble,
+	getBabble,
+	getBabbles,
+	getBabblesWithTag,
+	insertRebabble,
 	getUser,
 	insertComment,
-	deleteCommentList,
-	deleteLikeList,
-	deleteTagList,
+	deleteComments,
+	deleteLikes,
+	deleteTags,
 	like,
 	unlike,
 	deleteComment,
 	follow,
 	unfollow,
-	getFollowerList,
-	getFollowingList,
-	getLikePostList,
+	getFollowers,
+	getFollowings,
+	getLikeBabbles,
 	getMyInfo,
+	getBabblesWithId,
 };
