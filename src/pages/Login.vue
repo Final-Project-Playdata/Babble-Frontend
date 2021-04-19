@@ -1,9 +1,11 @@
 <template>
 	<div class="flex flex-col items-center space-y-4 mt-10">
+		&nbsp;
+			<br>
 		<img
-			src="../logo/5.jpg"
-			width="200"
-			height="200"
+			src="../logo/6.jpg"
+			width="300"
+			height="300"
 			class="text-4xl text-primary"
 		/>
 		<input

@@ -1,11 +1,14 @@
 <template>
 	<div class="flex flex-col items-center space-y-4 mt-10">
-		<i
-			:class="`fab fa-twitter text-4xl text-primary ${
-				loading ? 'animate-bounce' : ''
-			}`"
-		></i>
-		<span class="text-2xl font-bold">뜨위떠 회원가입</span>
+				&nbsp;
+			<br>
+		<img
+			src="../logo/6.jpg"
+			width="300"
+			height="300"
+			class="text-4xl text-primary"
+		/>
+		<span class="text-2xl font-bold">회원가입</span>
 		<input
 			v-model="username"
 			type="text"

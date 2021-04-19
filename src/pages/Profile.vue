@@ -67,7 +67,7 @@
 				<div class="text-gray">@{{ profileUser.nickname }}</div>
 				<audio-player :audioUrl="profileUser.bio"></audio-player>
 				<div>
-					<span class="text-gray">가입일:</span>
+					<span class="text-gray">가입일: </span>
 					<span class="text-gray">{{
 						moment(profileUser.regDate).format('YYYY년 MM월')
 					}}</span>

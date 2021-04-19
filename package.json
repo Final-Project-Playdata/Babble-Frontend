@@ -6,8 +6,8 @@
 		"build": "vite build && firebase deploy"
 	},
 	"dependencies": {
-		"lamejs": "^1.2.0",
 		"axios": "^0.21.1",
+		"lamejs": "^1.2.0",
 		"moment": "^2.29.1",
 		"node-sass": "^4.5.3",
 		"sass-loader": "^6.0.6",

@@ -270,7 +270,7 @@
 						height="50"
 						viewBox="0 0 24 24"
 						fill="none"
-						stroke="#ff0000"
+						stroke="#ff6b64"
 						stroke-width="2"
 						stroke-linecap="round"
 						stroke-linejoin="round"
