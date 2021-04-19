@@ -65,6 +65,10 @@ export default {
 					username: email.value,
 					password: password.value,
 				};
+
+				store.commit('SET_USERNAME', email.value);
+				store.commit('SET_PASSWORD', password.value);
+
 				const data = await signIn(userData);
 
 				// get user info

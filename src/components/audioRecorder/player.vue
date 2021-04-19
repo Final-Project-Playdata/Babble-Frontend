@@ -107,7 +107,6 @@ import { convertTimeMMSS } from './utils.js';
 export default {
 	props: {
 		src: { type: String },
-		record: { type: Object },
 		filename: { type: String },
 	},
 	data() {
@@ -143,7 +142,7 @@ export default {
 	},
 	computed: {
 		audioSource() {
-			const url = this.src || this.record.url;
+			const url = this.src;
 			if (url) {
 				return url;
 			} else {

@@ -5,10 +5,12 @@ const store = createStore({
 	state() {
 		return {
 			user: null,
-			error: 200,
 			token: null,
+			username: null,
+			password: null,
 			followers: null,
 			followings: null,
+			checkedAudio: null,
 		};
 	},
 	mutations: {
@@ -41,6 +43,15 @@ const store = createStore({
 		},
 		SET_FOLLOWINGS(state, followings) {
 			state.followings = followings;
+		},
+		SET_CHECKEDAUDIO(state, checkedAudio) {
+			state.checkedAudio = checkedAudio;
+		},
+		SET_USERNAME(state, username) {
+			state.username = username;
+		},
+		SET_PASSWORD(state, password) {
+			state.password = password;
 		},
 	},
 	plugins: [createPersistedState()],

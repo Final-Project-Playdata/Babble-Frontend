@@ -24,11 +24,10 @@ z
 
 <script>
 import UploaderPropsMixin from './uploader-props.js';
-import { saveAudio } from '../../api/babbleSteam.js';
-import { checkAudio } from '../../api/babbleFlask.js';
 import { insertBabble } from '../../api/babble.js';
 import IconButton from './icon-button.vue';
 import store from '../../store/index.js';
+
 export default {
 	mixins: [UploaderPropsMixin],
 	props: {
@@ -38,44 +37,28 @@ export default {
 		IconButton,
 	},
 	setup(props, { emit }) {
-		const getImageName = () => {
-			let date = new Date();
-			let name = `${store.state.user.username}.${date.getFullYear()}-${
-				date.getMonth() + 1
-			}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}.wav`;
-			return name;
-		};
-
 		const upload = async () => {
-			if (!props.record.url) {
+			if (!store.state.checkedAudio) {
 				return;
 			}
-
-			props.record.blob = new File([props.record.blob], getImageName(), {
-				type: props.record.blob.type,
-				lastModified: props.record.blob.lastModified,
-			});
-
-			const data = new FormData();
-			data.append('audio', props.record.blob);
-
-			saveAudio(data);
-
+			let tempTags = [];
+			tempTags = tempTags.concat(
+				store.state.checkedAudio.emotion,
+				store.state.checkedAudio.keyword,
+				store.state.checkedAudio.sensitivity
+			);
 			const babble = {
-				fileUrl: props.record.blob.name,
-				tags: ['test1', 'test2', 'test3'],
+				fileUrl: store.state.checkedAudio.name,
+				tags: tempTags,
 			};
-			// let newBabble = await insertBabble(babble);
-			// newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
-			console.log(1);
-			let check = await checkAudio(data);
-			console.log(check);
-			console.log(2);
-			// emit('insert-babble', newBabble.data);
-			// emit('close-modal');
+			let newBabble = await insertBabble(babble);
+			newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
+			store.commit('SET_CHECKEDAUDIO', null);
+			emit('insert-babble', newBabble.data);
+			emit('close-modal');
 		};
 
-		return { upload, getImageName };
+		return { upload };
 	},
 };
 </script>
