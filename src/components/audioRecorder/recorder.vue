@@ -207,7 +207,7 @@
 				<icon-button
 					class="ar-icon ar-icon__lg"
 					:name="iconButtonType"
-					v-if="!recordList"
+					v-if="!record"
 					:class="{
 						'ar-icon--rec': isRecording,
 						'ar-icon--pulse': isRecording && volume > 0.02,
@@ -217,39 +217,25 @@
 				<icon-button
 					class="ar-icon ar-icon__sm ar-recorder__stop"
 					name="stop"
-					v-if="!recordList"
+					v-if="!record"
 					@click="stopRecorder"
 				/>
 			</div>
 
 			<div class="audio_recorded">
-				<audio-player
-					:src="recordList[0].url"
-					:record="recordList[0]"
-					v-if="recordList"
-				/>
+				<audio-player :src="record" v-if="record" />
 			</div>
 
-			<div class="ar-recorder__duration" v-if="!recordList">
+			<div class="ar-recorder__duration" v-if="!record">
 				{{ recordedTime }}
 			</div>
 			<!--얘가 문제-->
-			<!-- <div class="ar-records">
-				<div
-					class="ar-records__record"
-					:class="{ 'ar-records__record--selected': record.id }"
-					:key="record.id"
-					v-for="record in recordList"
-					@click="choiceRecord(record)"
-				>
-					<div class="ar__text">해시태그, 핵심키워드들</div>
-					<div class="ar__emo">감정 이모티콘</div>
-				</div>
-			</div> -->
+			<div v-if="tags">
+				<span v-for="tag in tags" :key="tag"> #{{ tag }}&nbsp;&nbsp; </span>
+			</div>
 			<div class="parent">
 				<uploader
-					v-for="(record, idx) in recordList"
-					:key="idx"
+					v-if="record"
 					class="ar__uploader"
 					:record="record"
 					:filename="filename"
@@ -258,12 +244,7 @@
 					@close-modal="closeModal"
 					@insert-babble="insertNewBabble"
 				/>&nbsp;&nbsp;&nbsp;&nbsp;
-				<div
-					class="child"
-					v-for="(record, idx) in recordList"
-					:key="idx"
-					@click="reset"
-				>
+				<div class="child" v-if="record" @click="reset">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="50"
@@ -293,6 +274,8 @@ import Recorder from './recorder.js';
 import Uploader from './uploader.vue';
 import UploaderPropsMixin from './uploader-props.js';
 import { convertTimeMMSS } from './utils.js';
+import { checkAudio } from '../../api/babbleFlask.js';
+import store from '../../store/index.js';
 
 export default {
 	mixins: [UploaderPropsMixin],
@@ -315,9 +298,10 @@ export default {
 		return {
 			isUploading: false,
 			recorder: this._initRecorder(),
-			recordList: null,
+			record: null,
 			selected: {},
 			uploadStatus: null,
+			tags: [],
 		};
 	},
 	components: {
@@ -330,7 +314,6 @@ export default {
 	},
 	methods: {
 		reset() {
-			console.log(123);
 			Object.assign(this.$data, this.$options.data.call(this));
 		},
 		toggleRecorder() {
@@ -343,20 +326,32 @@ export default {
 				this.recorder.pause();
 			}
 		},
-		stopRecorder() {
+		async stopRecorder() {
 			if (!this.isRecording) {
 				return;
 			}
 
 			this.recorder.stop();
-			this.recordList = this.recorder.recordList();
-		},
-		choiceRecord(record) {
-			if (this.record === record) {
-				return;
-			}
-			this.selected = record;
-			this.selectRecord(record);
+			let audioList = this.recorder.recordList();
+
+			let audio = new File([audioList[0].blob], store.state.user.username, {
+				type: audioList[0].blob.type,
+				lastModified: audioList[0].blob.lastModified,
+			});
+
+			const data = new FormData();
+			data.append('audio', audio);
+
+			let checkedAudio = await checkAudio(data);
+			let tempTags = [];
+			tempTags = tempTags.concat(
+				checkedAudio.data.emotion,
+				checkedAudio.data.keyword,
+				checkedAudio.data.sensitivity
+			);
+			this.tags = tempTags;
+			this.record = `http://localhost:88/audio/${checkedAudio.data.name}`;
+			store.commit('SET_CHECKEDAUDIO', checkedAudio.data);
 		},
 		_initRecorder() {
 			return new Recorder({
@@ -374,13 +369,12 @@ export default {
 		},
 		insertNewBabble: function (babble) {
 			this.reset();
-			console.log(babble);
 			this.$emit('insert-babble', babble);
 		},
 	},
 	computed: {
 		attemptsLeft() {
-			return this.attempts - this.recordList.length;
+			return this.attempts - this.record.length;
 		},
 		iconButtonType() {
 			return this.isRecording && this.isPause

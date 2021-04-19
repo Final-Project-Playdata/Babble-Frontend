@@ -59,7 +59,7 @@
 				<div
 					v-if="!isRebabbleed"
 					class="text-gray-500 hover:text-green-400"
-					@click="onInsertRebabble(babble.id)"
+					@click="onInsertRebabble(babble)"
 				>
 					<i class="fas fa-retweet hover:bg-green-50 rounded-full p-2"></i>
 					<span class="ml-1 text-sm">{{ rebabbleCount }}</span>
@@ -118,12 +118,11 @@ export default {
 				this.$emit('delete', this.babble);
 			}
 		},
-		async onInsertRebabble(babbleId) {
+		async onInsertRebabble(babble) {
 			const data = {
-				fileUrl: '1111@1111.com.2021-4-16-16-57-31-863.wav',
-				duration: '26.3',
-				tags: ['test1', 'test2', 'test3'],
-				rebabbleId: babbleId,
+				fileUrl: babble.fileUrl,
+				tags: babble.tags,
+				rebabbleId: babble.id,
 			};
 			let rebabble = await insertRebabble(data);
 			rebabble.data.user.avatar = `http://localhost:88/image/${rebabble.data.user.avatar}`;

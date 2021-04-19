@@ -173,10 +173,17 @@ export default {
 
 		const getImageName = () => {
 			let date = new Date();
-			let name = `${store.state.user.username}.${date.getFullYear()}-${
-				date.getMonth() + 1
-			}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.jpeg`;
-			return name;
+			if (date.getMonth() + 1 < 10) {
+				let name = `${store.state.user.username}.${date.getFullYear()}-0${
+					date.getMonth() + 1
+				}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.jpeg`;
+				return name;
+			} else {
+				let name = `${store.state.user.username}.${date.getFullYear()}-${
+					date.getMonth() + 1
+				}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}-${date.getMilliseconds()}.jpeg`;
+				return name;
+			}
 		};
 
 		const previewBackgroundImage = event => {
@@ -228,9 +235,8 @@ export default {
 				tempUser.background = tempUser.background.slice(26);
 			}
 
-			console.log(tempUser);
 			updateUserInfo(tempUser);
-			// emit('close-modal');
+			emit('close-modal');
 		};
 
 		return {

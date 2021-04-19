@@ -130,17 +130,17 @@ export default {
 		const messageBody = ref('');
 		const messages = ref([]);
 
-		onBeforeMount(async () => {
-			const snapshot = await USER_COLEECTION.orderBy(
-				'created_at',
-				'desc'
-			).get();
-			snapshot.docs.forEach(doc => {
-				let user = doc.data();
-				if (user.email === currentUser.value.email) return;
-				users.value.push(user);
-			});
-		});
+		// onBeforeMount(async () => {
+		// 	const snapshot = await USER_COLEECTION.orderBy(
+		// 		'created_at',
+		// 		'desc'
+		// 	).get();
+		// 	snapshot.docs.forEach(doc => {
+		// 		let user = doc.data();
+		// 		if (user.email === currentUser.value.email) return;
+		// 		users.value.push(user);
+		// 	});
+		// });
 
 		const onSelectUser = async user => {
 			//   selectedUser.value = user

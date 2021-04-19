@@ -1,92 +1,80 @@
 // 학습 노트 조작과 관련된 CRUD API 함수 파일
 import { mvcInstance } from './index';
 import store from '../store/index';
+import { checkJwt } from './auth.js';
 
 function getTagsInBabble(id) {
-	return mvcInstance.get(`/babble/${id}/tags`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`/babble/${id}/tags`);
 }
 
 function insertTags(id, tags) {
-	return mvcInstance.post(`/babble/${id}/tags`, tags).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post(`/babble/${id}/tags`, tags);
 }
 
 function updateTags(id, tags) {
-	return mvcInstance.put(`/babble/${id}/tags`, tags).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.put(`/babble/${id}/tags`, tags);
 }
 
 function insertBabble(babble) {
-	return mvcInstance.post('babble', babble).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post('babble', babble);
 }
 
 function deleteBabble(id) {
-	return mvcInstance.delete(`/babble/${id}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`/babble/${id}`);
 }
 
 function updateBabble(id) {
-	return mvcInstance.put(`/babble/${id}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.put(`/babble/${id}`);
 }
 
 function getBabble(id) {
-	return mvcInstance.get(`/babble/${id}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`/babble/${id}`);
 }
 
 function getBabbles() {
-	return mvcInstance.get('babbles').catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get('babbles');
 }
 
 function getBabblesWithTag(tag) {
-	return mvcInstance.get(`babbles/${tag}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`babbles/${tag}`);
 }
 
 function getBabblesWithId(id) {
-	return mvcInstance.get(`user/${id}/babbles`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`user/${id}/babbles`);
 }
 
 function insertRebabble(babble) {
-	return mvcInstance.post('rebabble', babble).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post('rebabble', babble);
 }
 
 function getUser(id) {
-	return mvcInstance.get(`user/${id}`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`user/${id}`);
 }
 
 function getMyInfo() {
-	return mvcInstance.get('my').catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get('my');
 }
 
 function insertComment(babbleId, comment) {
-	return mvcInstance.post(`babble/${babbleId}/comment`, comment).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post(`babble/${babbleId}/comment`, comment);
 }
 
 function deleteComment(babbleId, commentId) {
+	checkJwt();
 	return mvcInstance
 		.delete(`babble/${babbleId}/comment/${commentId}`)
 		.catch(err => {
@@ -95,63 +83,53 @@ function deleteComment(babbleId, commentId) {
 }
 
 function deleteComments(id) {
-	return mvcInstance.delete(`babble/${id}/comments`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`babble/${id}/comments`);
 }
 
 function deleteLikes(id) {
-	return mvcInstance.delete(`babble/${id}/likes`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`babble/${id}/likes`);
 }
 
 function deleteTags(id) {
-	return mvcInstance.delete(`babble/${id}/tags`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`babble/${id}/tags`);
 }
 
 function like(id) {
-	return mvcInstance.post(`babble/${id}/like`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post(`babble/${id}/like`);
 }
 
 function unlike(id) {
-	return mvcInstance.delete(`babble/${id}/like`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`babble/${id}/like`);
 }
 
 function follow(id) {
-	return mvcInstance.post(`user/${id}/follow`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.post(`user/${id}/follow`);
 }
 
 function unfollow(id) {
-	return mvcInstance.delete(`user/${id}/follow`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.delete(`user/${id}/follow`);
 }
 
 function getFollowers(id) {
-	return mvcInstance.get(`user/${id}/follower`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`user/${id}/follower`);
 }
 
 function getFollowings(id) {
-	return mvcInstance.get(`user/${id}/following`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`user/${id}/following`);
 }
 
 function getLikeBabbles(id) {
-	return mvcInstance.get(`user/${id}/likes`).catch(err => {
-		store.state.error = err.toString().slice(-3);
-	});
+	checkJwt();
+	return mvcInstance.get(`user/${id}/likes`);
 }
 
 export {
