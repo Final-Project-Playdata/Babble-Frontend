@@ -6,7 +6,6 @@
 			<div class="fixed inset-0 transition-opacity" aria-hidden="true">
 				<div class="absolute inset-0 bg-gray-500 opacity-75"></div>
 			</div>
-
 			<!-- contents -->
 			<div
 				@click.stop
@@ -22,22 +21,6 @@
 						@click="$emit('close-modal')"
 						class="fas fa-times text-primary text-lg p-2 h-10 w-10 hover:bg-blue-50 rounded-full"
 					></button>
-					<!-- tweet button -->
-					<div class="text-right sm:hidden mr-2">
-						<button
-							v-if="!tweetBody.length"
-							class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
-						>
-							트윗
-						</button>
-						<button
-							v-else
-							@click="onAddTweet"
-							class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
-						>
-							트윗
-						</button>
-					</div>
 				</div>
 				<!-- tweeting section -->
 				<div class="flex p-4">
@@ -70,7 +53,6 @@ import AudioRecorder from './audioRecorder/recorder.vue';
 export default {
 	components: { AudioRecorder },
 	setup(props, { emit }) {
-		const tweetBody = ref('');
 		const currentUser = computed(() => store.state.user);
 
 		const closeModal = () => {
@@ -78,7 +60,6 @@ export default {
 		};
 
 		return {
-			tweetBody,
 			currentUser,
 			closeModal,
 		};

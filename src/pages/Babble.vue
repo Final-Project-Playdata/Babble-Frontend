@@ -28,6 +28,13 @@
 						<div class="text-gray text-sm">@{{ babble.user.nickname }}</div>
 					</div>
 				</div>
+				<div class="tag">
+					<span v-for="tag in babble.tags" :key="tag">
+						<router-link :to="`/${tag}`">
+							#{{ tag }}&nbsp;&nbsp;</router-link
+						></span
+					>
+				</div>
 				<detail-audio-player
 					class="px-3 py-2"
 					:audioUrl="babble.fileUrl"
@@ -51,7 +58,7 @@
 							class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full h-10 w-10"
 						></i>
 					</button>
-					<button @click="onRebabble(babble.id)">
+					<button @click="onRebabble(babble)">
 						<i
 							v-if="isRebabbled"
 							class="fas fa-rebabble text-xl hover:bg-green-50 text-green-400 p-2 rounded-full h-10 w-10"
@@ -80,7 +87,13 @@
 					class="flex hover:bg-gray-50 cursor-pointer px-3 py-3 border-b border-gray-100"
 				>
 					<img
+						v-if="comment.user.avatar.slice(-4) !== 'null'"
 						:src="comment.user.avatar"
+						class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"
+					/>
+					<img
+						v-else
+						src="../image/defaultProfile.png"
 						class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"
 					/>
 					<div class="ml-2 flex-1">
@@ -93,7 +106,7 @@
 						</div>
 						<audio-player
 							class="px-3 py-2"
-							:audioUrl="babble.fileUrl"
+							:audioUrl="comment.fileUrl"
 						></audio-player>
 					</div>
 					<button
@@ -145,10 +158,11 @@ export default {
 	},
 	methods: {
 		onAddComment(comment) {
-			this.showCommentModal = false;
 			if (comment) {
+				comment.user.avatar = `http://localhost:88/image/${comment.user.avatar}`;
 				this.babble.comments.push(comment);
 			}
+			this.showCommentModal = false;
 		},
 		onDeleteComment(commentId) {
 			if (confirm('정말로 답글을 삭제하시겠습니까?')) {
@@ -158,16 +172,15 @@ export default {
 				);
 			}
 		},
-		onRebabble(babbleId) {
+		onRebabble(babble) {
 			if (this.isRebabbled) {
-				deleteBabble(babbleId);
+				deleteBabble(babble.id);
 				this.isRebabbled = false;
 			} else {
 				const data = {
-					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
-					duration: '26.3',
-					tags: ['test1', 'test2', 'test3'],
-					rebabbleId: babbleId,
+					fileUrl: babble.fileUrl,
+					tags: babble.tags,
+					rebabbleId: babble.id,
 				};
 				insertRebabble(data);
 				this.isRebabbled = true;
@@ -212,4 +225,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.tag {
+	margin-left: 20px;
+}
+</style>

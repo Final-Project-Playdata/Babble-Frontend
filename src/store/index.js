@@ -10,6 +10,7 @@ const store = createStore({
 			username: null,
 			password: null,
 			followers: null,
+			isCommentModal: false,
 			defaultProfile: '../image/defaultProfile.png',
 			followings: null,
 			checkedAudio: null,
@@ -57,6 +58,9 @@ const store = createStore({
 		},
 		SET_TAGS(state, tags) {
 			state.tags = tags;
+		},
+		SET_ISCOMMENTMODAL(state, isCommentModal) {
+			state.isCommentModal = isCommentModal;
 		},
 	},
 	plugins: [createPersistedState()],

@@ -42,13 +42,7 @@
 					>
 						<img
 							ref="backgroundImage"
-							v-if="$store.state.user.background.slice(-4) !== 'null'"
 							:src="$store.state.user.background"
-							class="object-cover absolute h-full w-full"
-						/>
-						<img
-							v-else
-							src="../image/defaultBackground.jpg"
 							class="object-cover absolute h-full w-full"
 						/>
 						<button
@@ -65,14 +59,8 @@
 						<!-- profile image -->
 						<img
 							ref="profileImage"
-							v-if="$store.state.user.avatar.slice(-4) !== 'null'"
 							:src="$store.state.user.avatar"
 							class="border-4 border-white w-28 h-28 absolute -bottom-14 left-2 rounded-full"
-						/>
-						<img
-							v-else
-							src="../image/defaultProfile.png"
-							class="object-cover absolute h-full w-full"
 						/>
 						<button
 							@click="onChangeProfileImage"

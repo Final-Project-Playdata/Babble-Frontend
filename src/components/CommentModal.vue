@@ -43,7 +43,13 @@
 					<div class="flex px-4 pt-4 pb-3">
 						<div class="flex flex-col">
 							<img
+								v-if="babble.user.avatar.slice(-4) !== 'null'"
 								:src="babble.user.avatar"
+								class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
+							/>
+							<img
+								v-else
+								src="../image/defaultProfile.png"
 								class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 							/>
 							<div class="ml-5 w-0.5 h-full bg-gray-300 mt-2 -mb-1"></div>
@@ -80,15 +86,9 @@
 							src="../image/defaultProfile.png"
 							class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 						/>
-						<div class="ml-2 flex-1 flex flex-col">
-							<textarea
-								v-model="babbleBody"
-								rows="5"
-								placeholder="내 답글을 트윗합니다"
-								class="w-full text-lg font-bold focus:outline-none mb-3 resize-none"
-							></textarea>
-							<!-- babble button -->
-							<div class="text-right hidden sm:block">
+						<audio-recorder @insert-comment="onCommentBabble" />
+						<!-- babble button -->
+						<!-- <div class="text-right hidden sm:block">
 								<button
 									v-if="!babbleBody.length"
 									class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
@@ -102,8 +102,8 @@
 								>
 									답글
 								</button>
-							</div>
-						</div>
+							</div> -->
+						<!-- </div> -->
 					</div>
 				</div>
 			</div>
@@ -116,24 +116,32 @@ import { ref, computed } from 'vue';
 import moment from 'moment';
 import store from '../store/index';
 import { insertComment } from '../api/babble';
+import AudioRecorder from './audioRecorder/recorder.vue';
 
 export default {
 	props: ['babble'],
+	components: { AudioRecorder },
 	setup(props, { emit }) {
 		const babbleBody = ref('');
 		const currentUser = computed(() => store.state.user);
 
+		if (props.babble) {
+			store.commit('SET_ISCOMMENTMODAL', true);
+		}
+		
 		const onCommentBabble = async () => {
 			try {
-				console.log(props.babble.id);
 				const data = {
-					post: {
+					babble: {
 						id: props.babble.id,
 					},
-					fileUrl: 'C:/ITstudy/12.project/python/011.wav',
+					fileUrl: store.state.checkedAudio.name,
 				};
-				let temp = await insertComment(props.babble.id, data);
-				emit('close-modal', temp.data);
+				let comment = await insertComment(props.babble.id, data);
+				store.commit('SET_ISCOMMENTMODAL', false);
+				store.commit('SET_CHECKEDAUDIO', null);
+				console.log(comment.data);
+				emit('close-modal', comment.data);
 			} catch (e) {
 				console.log('on comment babble error:', e);
 			}

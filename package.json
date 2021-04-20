@@ -1,5 +1,5 @@
 {
-	"name": "twitter-clone-vue3",
+	"name": "babble-frontend",
 	"version": "0.0.0",
 	"scripts": {
 		"dev": "vite",

@@ -243,6 +243,7 @@
 					:upload-url="uploadUrl"
 					@close-modal="closeModal"
 					@insert-babble="insertNewBabble"
+					@insert-comment="insertNewComment"
 				/>&nbsp;&nbsp;&nbsp;&nbsp;
 				<div class="child" v-if="record" @click="reset">
 					<svg
@@ -250,7 +251,6 @@
 						width="50"
 						height="50"
 						viewBox="0 0 24 24"
-						fill="none"
 						stroke="#ff6b64"
 						stroke-width="2"
 						stroke-linecap="round"
@@ -409,6 +409,10 @@ export default {
 		insertNewBabble: function (babble) {
 			this.reset();
 			this.$emit('insert-babble', babble);
+		},
+		insertNewComment: function (babble) {
+			this.reset();
+			this.$emit('insert-comment');
 		},
 	},
 	computed: {

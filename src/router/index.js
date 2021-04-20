@@ -47,8 +47,8 @@ const routes = [
 		meta: { isMenu: false, layout: 'DefaultLayout', requireAuth: true },
 	},
 	{
-		path: '/tweet/:id',
-		name: 'tweet',
+		path: '/babble/:id',
+		name: 'babble',
 		component: Babble,
 		meta: { isMenu: false, layout: 'DefaultLayout', requireAuth: true },
 	},

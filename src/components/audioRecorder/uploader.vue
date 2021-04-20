@@ -41,14 +41,22 @@ export default {
 			if (!store.state.checkedAudio) {
 				return;
 			}
-			const babble = {
-				fileUrl: store.state.checkedAudio.name,
-				tags: store.state.tags,
-			};
-			let newBabble = await insertBabble(babble);
-			newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
-			store.commit('SET_CHECKEDAUDIO', null);
-			emit('insert-babble', newBabble.data);
+			console.log(store.state.checkedAudio);
+			console.log(store.state.isCommentModal);
+			if (!store.state.isCommentModal) {
+				console.log(store.state.checkedAudio);
+				const babble = {
+					fileUrl: store.state.checkedAudio.name,
+					tags: store.state.tags,
+				};
+				let newBabble = await insertBabble(babble);
+				newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
+				store.commit('SET_CHECKEDAUDIO', null);
+				emit('insert-babble', newBabble.data);
+			} else {
+				store.commit('SET_ISCOMMENTMODAL', false);
+				emit('insert-comment');
+			}
 			emit('close-modal');
 		};
 
