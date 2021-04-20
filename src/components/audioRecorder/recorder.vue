@@ -390,7 +390,7 @@ export default {
 			return this.recorder.isRecording;
 		},
 		recordedTime() {
-			if (this.time && this.recorder.duration >= this.time * 60) {
+			if (this.recorder.duration >= 30) {
 				this.stopRecorder();
 			}
 			return convertTimeMMSS(this.recorder.duration);
