@@ -46,7 +46,16 @@
 				<button
 					class="hidden xl:flex mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 items-center"
 				>
-					<img :src="$store.state.user.avatar" class="w-10 h-10 rounded-full" />
+					<img
+						v-if="$store.state.user.avatar.slice(-4) !== 'null'"
+						:src="$store.state.user.avatar"
+						class="w-10 h-10 rounded-full"
+					/>
+					<img
+						v-else
+						src="../image/defaultProfile.png"
+						class="w-10 h-10 rounded-full"
+					/>
 					<div class="xl:ml-2 hidden xl:block">
 						<div class="text-sm font-bold">{{ currentUser.username }}</div>
 						<div class="text-xs text-gray-500 text-left">
@@ -59,7 +68,13 @@
 				</button>
 				<div class="xl:hidden flex justify-center">
 					<img
+						v-if="$store.state.user.avatar.slice(-4) !== 'null'"
 						:src="$store.state.user.avatar"
+						class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
+					/>
+					<img
+						v-else
+						src="../image/defaultProfile.png"
 						class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
 					/>
 				</div>
@@ -78,7 +93,16 @@
 			<button
 				class="hover:bg-gray-50 border-b border-gray-100 flex p-3 w-full items-center"
 			>
-				<img :src="$store.state.user.avatar" class="w-10 h-10 rounded-full" />
+				<img
+					v-if="$store.state.user.avatar.slice(-4) !== 'null'"
+					:src="$store.state.user.avatar"
+					class="w-10 h-10 rounded-full"
+				/>
+				<img
+					v-else
+					src="../image/defaultProfile.png"
+					class="w-10 h-10 rounded-full"
+				/>
 				<div class="ml-2">
 					<div class="font-bold text-sm">{{ currentUser.username }}</div>
 					<div class="text-left text-gray-500 text-sm">

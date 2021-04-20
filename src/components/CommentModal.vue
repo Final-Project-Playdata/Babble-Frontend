@@ -50,7 +50,9 @@
 						</div>
 						<div class="ml-2 flex-1">
 							<div class="flex space-x-2">
-								<span class="font-bold text-sm">{{ babble.user.username }}</span>
+								<span class="font-bold text-sm">{{
+									babble.user.username
+								}}</span>
 								<span class="text-gray text-sm"
 									>@{{ babble.user.nickname }}</span
 								>
@@ -69,7 +71,13 @@
 					<!-- babbleing section -->
 					<div class="flex px-4 pb-4">
 						<img
+							v-if="currentUser.avatar.slice(-4) !== 'null'"
 							:src="currentUser.avatar"
+							class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
+						/>
+						<img
+							v-else
+							src="../image/defaultProfile.png"
 							class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 						/>
 						<div class="ml-2 flex-1 flex flex-col">

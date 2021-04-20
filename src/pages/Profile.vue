@@ -11,18 +11,33 @@
 				</button>
 				<div>
 					<div class="font-extrabold text-lg">{{ profileUser.username }}</div>
-					<div class="text-xs text-gray">{{ babbles.length }} 트윗</div>
+					<div class="text-xs text-gray">{{ babbles.length }} 배블</div>
 				</div>
 			</div>
 			<!-- background image -->
 			<div class="bg-gray-300 h-48 relative flex-none">
-				<img :src="profileUser.background" class="w-full h-48 object-cover" />
+				<img
+					v-if="$store.state.user.avatar.slice(-4) !== 'null'"
+					:src="profileUser.background"
+					class="w-full h-48 object-cover"
+				/>
+				<img
+					v-else
+					src="../image/defaultBackground.jpg"
+					class="w-full h-48 object-cover"
+				/>
 				<!-- profile image -->
 				<div
 					class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2"
 				>
 					<img
+						v-if="profileUser.avatar.slice(-4) !== 'null'"
 						:src="profileUser.avatar"
+						class="w-full h-full rounded-full opacity-90 hover:opacity-100 cursor-pointer"
+					/>
+					<img
+						v-else
+						src="../image/defaultProfile.png"
 						class="w-full h-full rounded-full opacity-90 hover:opacity-100 cursor-pointer"
 					/>
 				</div>
@@ -214,7 +229,7 @@ export default {
 			user.data.background = `http://localhost:88/image/${user.data.background}`;
 			profileUser.value = user.data;
 
-			if(profileUser.value.id === currentUser.value.id){
+			if (profileUser.value.id === currentUser.value.id) {
 				store.commit('SET_USER', user.data);
 			}
 

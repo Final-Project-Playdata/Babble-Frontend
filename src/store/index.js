@@ -5,10 +5,12 @@ const store = createStore({
 	state() {
 		return {
 			user: null,
+			tags: null,
 			token: null,
 			username: null,
 			password: null,
 			followers: null,
+			defaultProfile: '../image/defaultProfile.png',
 			followings: null,
 			checkedAudio: null,
 		};
@@ -52,6 +54,9 @@ const store = createStore({
 		},
 		SET_PASSWORD(state, password) {
 			state.password = password;
+		},
+		SET_TAGS(state, tags) {
+			state.tags = tags;
 		},
 	},
 	plugins: [createPersistedState()],

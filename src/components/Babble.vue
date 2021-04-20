@@ -5,7 +5,13 @@
 	>
 		<router-link :to="`/profile/${babble.user.id}`">
 			<img
+				v-if="babble.user.avatar.slice(-4) !== 'null'"
 				:src="babble.user.avatar"
+				class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
+			/>
+			<img
+				v-else
+				src="../image/defaultProfile.png"
 				class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 			/>
 		</router-link>

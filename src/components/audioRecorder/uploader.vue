@@ -41,15 +41,9 @@ export default {
 			if (!store.state.checkedAudio) {
 				return;
 			}
-			let tempTags = [];
-			tempTags = tempTags.concat(
-				store.state.checkedAudio.emotion,
-				store.state.checkedAudio.keyword,
-				store.state.checkedAudio.sensitivity
-			);
 			const babble = {
 				fileUrl: store.state.checkedAudio.name,
-				tags: tempTags,
+				tags: store.state.tags,
 			};
 			let newBabble = await insertBabble(babble);
 			newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;

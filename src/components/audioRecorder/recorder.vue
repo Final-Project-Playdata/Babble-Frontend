@@ -349,9 +349,48 @@ export default {
 				checkedAudio.data.keyword,
 				checkedAudio.data.sensitivity
 			);
+			let emoges = [];
+			tempTags.forEach(tag => {
+				let answer = '';
+				switch (tag) {
+					case '기쁨':
+						answer = '😍';
+						break;
+					case '신뢰':
+						answer = '😉';
+						break;
+					case '공포':
+						answer = '😱';
+						break;
+					case '놀라움':
+						answer = '😲';
+						break;
+					case '슬품':
+						answer = '😢';
+						break;
+					case '혐오':
+						answer = '🤢';
+						break;
+					case '분노':
+						answer = '😡';
+						break;
+					case '기대':
+						answer = '😮';
+						break;
+					default:
+						answer = 'none';
+						break;
+				}
+				if (answer !== 'none') {
+					emoges.push(answer);
+				}
+			});
+
+			tempTags = tempTags.concat(emoges);
 			this.tags = tempTags;
 			this.record = `http://localhost:88/audio/${checkedAudio.data.name}`;
 			store.commit('SET_CHECKEDAUDIO', checkedAudio.data);
+			store.commit('SET_TAGS', tempTags);
 		},
 		_initRecorder() {
 			return new Recorder({
