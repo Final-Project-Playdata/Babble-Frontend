@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col items-center space-y-4 mt-10">
-				&nbsp;
-			<br>
+		&nbsp;
+		<br />
 		<img
 			src="../logo/6.jpg"
 			width="300"
@@ -57,10 +57,10 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { validateEmail } from '../utils/validation.js';
 import { useRouter } from 'vue-router';
 import { signUp } from '../api/auth.js';
-import { validateEmail } from '../utils/validation.js';
+import { ref } from 'vue';
 
 export default {
 	setup() {
@@ -84,42 +84,37 @@ export default {
 				return;
 			}
 
-			let data = validateEmail(username.value);
+			let isValidate = validateEmail(username.value);
 
-			if (!data) {
+			if (!isValidate) {
 				alert('이메일 형식이 맞지 않습니다.');
 				return;
 			}
 
-			try {
-				loading.value = true;
+			loading.value = true;
 
-				const data = {
-					username: username.value,
-					nickname: nickname.value,
-					firstName: firstName.value,
-					lastName: lastName.value,
-					password: password.value,
-				};
+			const data = {
+				username: username.value,
+				nickname: nickname.value,
+				firstName: firstName.value,
+				lastName: lastName.value,
+				password: password.value,
+			};
 
-				signUp(data);
+			signUp(data);
+			loading.value = false;
 
-				router.push('/login');
-			} catch (e) {
-				alert('회원가입 실패');
-			} finally {
-				loading.value = false;
-			}
+			router.push('/login');
 		};
 
 		return {
+			onRegister,
+			firstName,
 			username,
 			nickname,
-			firstName,
 			lastName,
 			password,
 			loading,
-			onRegister,
 		};
 	},
 };

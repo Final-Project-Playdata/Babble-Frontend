@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Home from '../pages/Home.vue';
 import Notifications from '../pages/Notifications.vue';
 import Messages from '../pages/Messages.vue';
-import Profile from '../pages/Profile.vue';
 import Register from '../pages/Register.vue';
+import Profile from '../pages/Profile.vue';
 import Babble from '../pages/Babble.vue';
 import Login from '../pages/Login.vue';
+import Home from '../pages/Home.vue';
 import store from '../store';
 
 const routes = [

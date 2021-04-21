@@ -16,7 +16,7 @@
 			/>
 		</router-link>
 		<div class="ml-3 flex-1 flex flex-col space-y-1">
-			<div v-if="isRebabblePost">
+			<div v-if="babble.rebabbleUser">
 				Rebabbleed by {{ babble.rebabbleUser.username }}
 			</div>
 			<div class="text-sm flex justify-between items-center">
@@ -59,7 +59,7 @@
 					class="text-gray-500 hover:text-primary"
 				>
 					<i class="far fa-comment hover:bg-blue-50 rounded-full p-2"></i>
-					<span class="ml-1 text-sm">{{ commentCount }}</span>
+					<span class="ml-1 text-sm">{{ babble.comments.length }}</span>
 				</div>
 				<!-- rebabble button -->
 				<div
@@ -68,24 +68,24 @@
 					@click="onInsertRebabble(babble)"
 				>
 					<i class="fas fa-retweet hover:bg-green-50 rounded-full p-2"></i>
-					<span class="ml-1 text-sm">{{ rebabbleCount }}</span>
+					<span class="ml-1 text-sm">{{ babble.rebabbles.length }}</span>
 				</div>
-				<div v-else class="text-green-400" @click="onDeleteRebabble(babble)">
+				<div v-else class="text-green-400" @click="onDeleteRebabble()">
 					<i class="fas fa-retweet hover:bg-green-50 rounded-full p-2"></i>
-					<span class="ml-1 text-sm">{{ rebabbleCount }}</span>
+					<span class="ml-1 text-sm">{{ babble.rebabbles.length }}</span>
 				</div>
 				<!-- like button -->
 				<div
 					v-if="!isLiked"
 					class="text-gray-400 hover:text-red-400"
-					@click="handleLike(babble.id)"
+					@click="handleLike(babble)"
 				>
 					<i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
-					<span class="ml-1 text-sm">{{ likeCount }}</span>
+					<span class="ml-1 text-sm">{{ babble.likes.length }}</span>
 				</div>
 				<div v-else class="text-red-400" @click="handleUnlike(babble.id)">
 					<i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
-					<span class="ml-1 text-sm">{{ likeCount }}</span>
+					<span class="ml-1 text-sm">{{ babble.likes.length }}</span>
 				</div>
 				<!-- share button -->
 				<div class="text-gray-500 hover:text-primary"></div>
@@ -94,28 +94,21 @@
 		<comment-modal
 			:babble="babble"
 			v-if="showCommentModal"
-			@close-modal="(showCommentModal = false), commentCount++"
+			@close-modal="onCloseModal"
 		></comment-modal>
 	</div>
 </template>
 
 <script>
-import moment from 'moment';
-import { ref } from 'vue';
 import CommentModal from './CommentModal.vue';
-import { deleteBabble, insertRebabble, like, unlike } from '../api/babble';
 import AudioPlayer from './AudioPlayer.vue';
+import moment from 'moment';
+import { deleteBabble, insertRebabble, like, unlike } from '../api/babble';
+import { ref } from 'vue';
 
 export default {
 	components: { CommentModal, AudioPlayer },
 	props: ['currentUser', 'babble'],
-	data: function () {
-		return {
-			commentCount: this.babble.comments.length,
-			likeCount: this.babble.likes.length,
-			rebabbleCount: this.babble.rebabbles.length,
-		};
-	},
 	methods: {
 		onDeleteBabble(babbleId) {
 			if (confirm('정말로 배블을 삭제하시겠습니까?')) {
@@ -130,69 +123,69 @@ export default {
 				tags: babble.tags,
 				rebabbleId: babble.id,
 			};
+
 			let rebabble = await insertRebabble(data);
 			rebabble.data.user.avatar = `http://localhost:88/image/${rebabble.data.user.avatar}`;
+
 			this.$emit('rebabble', rebabble.data);
 			this.babble.rebabbles.push(rebabble.data);
 			this.isRebabbleed = true;
-			this.rebabbleCount++;
 		},
-		onDeleteRebabble(babble) {
-			babble.rebabbles.forEach(r => {
-				if (r.user.id === this.currentUser.id) {
-					deleteBabble(r.id);
-					let index = babble.rebabbles.indexOf(r);
-					babble.rebabbles.splice(index, 1);
-					this.$emit('unrebabble', r.id);
+		onDeleteRebabble() {
+			this.babble.rebabbles.forEach(rebabble => {
+				if (rebabble.user.id === this.currentUser.id) {
+					deleteBabble(rebabble.id);
+
+					let index = this.babble.rebabbles.indexOf(rebabble);
+					this.babble.rebabbles.splice(index, 1);
+
+					this.$emit('unrebabble', rebabble.id);
 				}
 			});
 
 			this.isRebabbleed = false;
-			this.rebabbleCount--;
 		},
-		handleLike(babbleId) {
-			like(babbleId);
-			this.likeCount++;
+		handleLike(babble) {
+			like(babble.id);
+			this.babble.likes.push(this.currentUser);
 			this.isLiked = true;
+			this.$emit('like', babble);
 		},
 		handleUnlike(babbleId) {
 			unlike(babbleId);
-			this.likeCount--;
+			this.babble.likes = this.babble.likes.filter(
+				user => user.id != this.currentUser.id
+			);
 			this.isLiked = false;
+			this.$emit('unlike', babbleId);
 		},
-		upCommentCount() {
-			this.commentCount++;
+		onCloseModal(comment) {
+			this.babble.comments.push(comment);
+			showCommentModal = false;
 		},
 	},
 	setup(props) {
 		const showCommentModal = ref(false);
-
-		let isRebabbleed = false;
-		let isLiked = false;
-		let isRebabblePost = false;
+		const isRebabbled = ref(false);
+		const isLiked = ref(false);
 
 		props.babble.rebabbles.forEach(babble => {
 			if (babble.user.id === props.currentUser.id) {
-				isRebabbleed = true;
+				isRebabbled.value = true;
 			}
 		});
 
 		props.babble.likes.forEach(l => {
 			if (l.id === props.currentUser.id) {
-				isLiked = true;
+				isLiked.value = true;
 			}
 		});
 
-		if (props.babble.rebabbleUser !== null) {
-			isRebabblePost = true;
-		}
-
 		return {
-			moment,
 			showCommentModal,
-			isRebabbleed,
+			isRebabbled,
 			isLiked,
-			isRebabblePost,
+			moment,
 		};
 	},
 };

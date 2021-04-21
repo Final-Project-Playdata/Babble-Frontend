@@ -128,30 +128,26 @@ export default {
 		if (props.babble) {
 			store.commit('SET_ISCOMMENTMODAL', true);
 		}
-		
+
 		const onCommentBabble = async () => {
-			try {
-				const data = {
-					babble: {
-						id: props.babble.id,
-					},
-					fileUrl: store.state.checkedAudio.name,
-				};
-				let comment = await insertComment(props.babble.id, data);
-				store.commit('SET_ISCOMMENTMODAL', false);
-				store.commit('SET_CHECKEDAUDIO', null);
-				console.log(comment.data);
-				emit('close-modal', comment.data);
-			} catch (e) {
-				console.log('on comment babble error:', e);
-			}
+			const data = {
+				babble: {
+					id: props.babble.id,
+				},
+				fileUrl: store.state.checkedAudio.name,
+			};
+			let comment = await insertComment(props.babble.id, data);
+
+			store.commit('SET_ISCOMMENTMODAL', false);
+			store.commit('SET_CHECKEDAUDIO', null);
+			emit('close-modal', comment.data);
 		};
 
 		return {
+			onCommentBabble,
+			currentUser,
 			babbleBody,
 			moment,
-			currentUser,
-			onCommentBabble,
 		};
 	},
 };

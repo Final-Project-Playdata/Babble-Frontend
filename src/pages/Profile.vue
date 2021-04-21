@@ -80,7 +80,7 @@
 					{{ profileUser.lastName + profileUser.firstName }}
 				</div>
 				<div class="text-gray">@{{ profileUser.nickname }}</div>
-				<audio-player :audioUrl="profileUser.bio"></audio-player>
+				<div>{{ profileUser.bio }}</div>
 				<div>
 					<span class="text-gray">가입일: </span>
 					<span class="text-gray">{{
@@ -88,9 +88,11 @@
 					}}</span>
 				</div>
 				<div>
-					<span class="font-bold mr-1">{{ followings.length }}</span>
+					<span class="font-bold mr-1">{{
+						profileUser.followings.length
+					}}</span>
 					<span class="text-gray mr-3">팔로우 중</span>
-					<span class="font-bold mr-1">{{ followers.length }}</span>
+					<span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
 					<span class="text-gray">팔로워</span>
 				</div>
 			</div>
@@ -134,13 +136,15 @@
 						? babbles
 						: currentTab == 'rebabble'
 						? rebabbles
-						: likeBabbles"
+						: profileUser.likeBabbles"
 					:key="babble.id"
 					:currentUser="currentUser"
 					:babble="babble"
 					@delete="deleteBabble"
 					@unrebabble="deleteRebabble"
 					@rebabble="addRebabble"
+					@like="addLike"
+					@unlike="deleteLike"
 				/>
 			</div>
 		</div>
@@ -154,24 +158,16 @@
 </template>
 
 <script>
-import Trends from '../components/Trends.vue';
-import Babble from '../components/Babble.vue';
-import store from '../store';
-import { computed, ref, onBeforeMount } from 'vue';
-import moment from 'moment';
-import { useRoute } from 'vue-router';
-import router from '../router';
 import ProfileEditModal from '../components/ProfileEditModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
-import {
-	getBabblesWithId,
-	getUser,
-	follow,
-	unfollow,
-	getFollowers,
-	getFollowings,
-	getLikeBabbles,
-} from '../api/babble';
+import Trends from '../components/Trends.vue';
+import Babble from '../components/Babble.vue';
+import router from '../router';
+import moment from 'moment';
+import store from '../store';
+import { computed, ref, onBeforeMount } from 'vue';
+import { getUser, follow, unfollow } from '../api/babble';
+import { useRoute } from 'vue-router';
 
 export default {
 	components: { Trends, Babble, ProfileEditModal, AudioPlayer },
@@ -191,11 +187,21 @@ export default {
 			this.showProfileEditModal = false;
 			window.location.reload();
 		},
+		addLike(babble) {
+			if (this.profileUser.id === this.currentUser.id) {
+				this.profileUser.likeBabbles.push(babble);
+			}
+		},
+		deleteLike(babbleId) {
+			this.profileUser.likeBabbles = this.profileUser.likeBabbles.filter(
+				t => t.id !== babbleId
+			);
+		},
 	},
 	computed: {
 		isFollowed() {
 			let status = false;
-			this.followers.forEach(user => {
+			this.profileUser.followers.forEach(user => {
 				if (user.id === this.currentUser.id) {
 					status = true;
 				}
@@ -204,22 +210,18 @@ export default {
 		},
 	},
 	watch: {
-		'$route.params.id'(val) {
+		'$route.params.id'() {
 			window.location.reload();
 		},
 	},
 	setup() {
 		const currentUser = computed(() => store.state.user);
-		const profileUser = ref(null);
-		const babbles = ref([]);
-		const rebabbles = ref([]);
-		const likeBabbles = ref([]);
-		const followings = ref([]);
-		const followers = ref([]);
-		const currentTab = ref('babble');
-		const route = useRoute();
-
 		const showProfileEditModal = ref(false);
+		const currentTab = ref('babble');
+		const profileUser = ref(null);
+		const rebabbles = ref([]);
+		const route = useRoute();
+		const babbles = ref([]);
 
 		onBeforeMount(async () => {
 			const id = route.params.id ?? currentUser.value.id;
@@ -229,12 +231,7 @@ export default {
 			user.data.background = `http://localhost:88/image/${user.data.background}`;
 			profileUser.value = user.data;
 
-			if (profileUser.value.id === currentUser.value.id) {
-				store.commit('SET_USER', user.data);
-			}
-
-			let babble = await getBabblesWithId(id);
-			babble.data.forEach(babble => {
+			user.data.babbles.forEach(babble => {
 				babble.user.avatar = `http://localhost:88/image/${babble.user.avatar}`;
 				if (babble.rebabbleId !== null) {
 					rebabbles.value.push(babble);
@@ -243,45 +240,38 @@ export default {
 				}
 			});
 
-			let followings = await getFollowings(id);
-			followings.value = followings.data;
-
-			let followers = await getFollowers(id);
-			followers.value = followers.data;
-
-			let likes = await getLikeBabbles(id);
-			likeBabbles.value = likes.data;
-			likeBabbles.value.forEach(likeBabble => {
+			profileUser.value.likeBabbles.forEach(likeBabble => {
 				likeBabble.user.avatar = `http://localhost:88/image/${likeBabble.user.avatar}`;
 			});
+
+			if (profileUser.id === currentUser.id) {
+				store.commit('SET_USER', user.data);
+			}
 		});
 
 		const onFollow = () => {
 			follow(profileUser.value.id);
-			followers.value.push(currentUser.value);
+			profileUser.followers.value.push(currentUser.value);
 		};
 
 		const onUnFollow = () => {
 			unfollow(profileUser.value.id);
-			followers.value = followers.value.filter(
+			profileUser.followers.value = profileUser.followers.value.filter(
 				f => f.id !== currentUser.value.id
 			);
 		};
 
 		return {
+			showProfileEditModal,
 			currentUser,
 			profileUser,
-			babbles,
-			rebabbles,
-			likeBabbles,
-			moment,
 			currentTab,
-			router,
-			showProfileEditModal,
-			onFollow,
 			onUnFollow,
-			followings,
-			followers,
+			rebabbles,
+			onFollow,
+			babbles,
+			moment,
+			router,
 		};
 	},
 };

@@ -92,7 +92,8 @@
 					>
 						<input
 							type="text"
-							placeholder="한줄소개 녹음버튼"
+							v-model="$store.state.user.bio"
+							placeholder="한줄소개"
 							class="text-black focus:outline-none"
 						/>
 					</div>
@@ -152,12 +153,13 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-import store from '../store';
 import { updateUserInfo } from '../api/auth.js';
-import { saveAudio, saveImage } from '../api/babbleSteam.js';
+import { saveImage } from '../api/babbleSteam.js';
+import { ref } from 'vue';
+import store from '../store';
+
 export default {
-	setup(props, { emit }) {
+	setup({ emit }) {
 		const profileImage = ref(null);
 		const profileImageData = ref(null);
 		const backgroundImage = ref(null);
@@ -172,7 +174,7 @@ export default {
 		};
 
 		const getImageName = () => {
-			let date = new Date();
+			const date = new Date();
 			if (date.getMonth() + 1 < 10) {
 				let name = `${store.state.user.username}.${date.getFullYear()}-0${
 					date.getMonth() + 1
@@ -187,14 +189,14 @@ export default {
 		};
 
 		const previewBackgroundImage = event => {
-			let file = event.target.files[0];
+			const file = event.target.files[0];
 
 			backgroundImageData.value = new File([file], getImageName(), {
 				type: file.type,
 				lastModified: file.lastModified,
 			});
 
-			let reader = new FileReader();
+			const reader = new FileReader();
 			reader.onload = function (event) {
 				backgroundImage.value.src = event.target.result;
 			};
@@ -202,14 +204,14 @@ export default {
 		};
 
 		const previewProfileImage = async event => {
-			let file = event.target.files[0];
+			const file = event.target.files[0];
 
 			profileImageData.value = new File([file], getImageName(), {
 				type: file.type,
 				lastModified: file.lastModified,
 			});
 
-			let reader = new FileReader();
+			const reader = new FileReader();
 			reader.onload = function (event) {
 				profileImage.value.src = event.target.result;
 			};
@@ -217,19 +219,23 @@ export default {
 		};
 
 		const onSaveProfile = () => {
-			let tempUser = store.state.user;
+			const tempUser = store.state.user;
+
 			if (profileImageData.value) {
 				tempUser.avatar = profileImageData.value.name;
-				let formData = new FormData();
+				const formData = new FormData();
 				formData.append('image', profileImageData.value);
+
 				saveImage(formData);
 			} else {
 				tempUser.avatar = tempUser.avatar.slice(26);
 			}
+
 			if (backgroundImageData.value) {
 				tempUser.background = backgroundImageData.value.name;
-				let formData = new FormData();
+				const formData = new FormData();
 				formData.append('image', backgroundImageData.value);
+
 				saveImage(formData);
 			} else {
 				tempUser.background = tempUser.background.slice(26);
@@ -241,14 +247,14 @@ export default {
 
 		return {
 			onChangeBackgroundImage,
-			onChangeProfileImage,
 			previewBackgroundImage,
+			onChangeProfileImage,
 			previewProfileImage,
-			profileImage,
+			backgroundImageData,
+			profileImageData,
 			backgroundImage,
 			onSaveProfile,
-			profileImageData,
-			backgroundImageData,
+			profileImage,
 		};
 	},
 };

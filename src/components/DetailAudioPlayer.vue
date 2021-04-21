@@ -3,7 +3,7 @@
 		<!-- Hide the default audio player -->
 		<div>
 			<audio style="display: none" ref="player" :id="playerid">
-				<source :src="url" type="audio/mpeg" />
+				<source :src="url" type="audio/mp3" />
 			</audio>
 		</div>
 

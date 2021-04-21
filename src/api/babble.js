@@ -1,22 +1,5 @@
-// 학습 노트 조작과 관련된 CRUD API 함수 파일
 import { mvcInstance } from './index';
-import store from '../store/index';
 import { checkJwt } from './auth.js';
-
-function getTagsInBabble(id) {
-	checkJwt();
-	return mvcInstance.get(`/babble/${id}/tags`);
-}
-
-function insertTags(id, tags) {
-	checkJwt();
-	return mvcInstance.post(`/babble/${id}/tags`, tags);
-}
-
-function updateTags(id, tags) {
-	checkJwt();
-	return mvcInstance.put(`/babble/${id}/tags`, tags);
-}
 
 function insertBabble(babble) {
 	checkJwt();
@@ -26,11 +9,6 @@ function insertBabble(babble) {
 function deleteBabble(id) {
 	checkJwt();
 	return mvcInstance.delete(`/babble/${id}`);
-}
-
-function updateBabble(id) {
-	checkJwt();
-	return mvcInstance.put(`/babble/${id}`);
 }
 
 function getBabble(id) {
@@ -75,26 +53,7 @@ function insertComment(babbleId, comment) {
 
 function deleteComment(babbleId, commentId) {
 	checkJwt();
-	return mvcInstance
-		.delete(`babble/${babbleId}/comment/${commentId}`)
-		.catch(err => {
-			store.state.error = err.toString().slice(-3);
-		});
-}
-
-function deleteComments(id) {
-	checkJwt();
-	return mvcInstance.delete(`babble/${id}/comments`);
-}
-
-function deleteLikes(id) {
-	checkJwt();
-	return mvcInstance.delete(`babble/${id}/likes`);
-}
-
-function deleteTags(id) {
-	checkJwt();
-	return mvcInstance.delete(`babble/${id}/tags`);
+	return mvcInstance.delete(`babble/${babbleId}/comment/${commentId}`);
 }
 
 function like(id) {
@@ -117,45 +76,20 @@ function unfollow(id) {
 	return mvcInstance.delete(`user/${id}/follow`);
 }
 
-function getFollowers(id) {
-	checkJwt();
-	return mvcInstance.get(`user/${id}/follower`);
-}
-
-function getFollowings(id) {
-	checkJwt();
-	return mvcInstance.get(`user/${id}/following`);
-}
-
-function getLikeBabbles(id) {
-	checkJwt();
-	return mvcInstance.get(`user/${id}/likes`);
-}
-
 export {
-	getTagsInBabble,
-	insertTags,
-	updateTags,
 	insertBabble,
 	deleteBabble,
-	updateBabble,
 	getBabble,
 	getBabbles,
 	getBabblesWithTag,
 	insertRebabble,
 	getUser,
 	insertComment,
-	deleteComments,
-	deleteLikes,
-	deleteTags,
 	like,
 	unlike,
 	deleteComment,
 	follow,
 	unfollow,
-	getFollowers,
-	getFollowings,
-	getLikeBabbles,
 	getMyInfo,
 	getBabblesWithId,
 };

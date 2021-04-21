@@ -37,12 +37,12 @@
 </template>
 
 <script>
+import AudioRecorder from '../components/audioRecorder/recorder.vue';
 import Trends from '../components/Trends.vue';
 import Babble from '../components/Babble.vue';
-import { ref, computed, onBeforeMount } from 'vue';
 import store from '../store';
 import { getBabbles, getBabblesWithTag } from '../api/babble';
-import AudioRecorder from '../components/audioRecorder/recorder.vue';
+import { ref, computed, onBeforeMount } from 'vue';
 
 export default {
 	components: { Trends, Babble, AudioRecorder },

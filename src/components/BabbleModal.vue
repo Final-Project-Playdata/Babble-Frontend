@@ -22,7 +22,7 @@
 						class="fas fa-times text-primary text-lg p-2 h-10 w-10 hover:bg-blue-50 rounded-full"
 					></button>
 				</div>
-				<!-- tweeting section -->
+				<!-- babble section -->
 				<div class="flex p-4">
 					<img
 						v-if="currentUser.avatar.slice(-4) !== 'null'"
@@ -35,10 +35,7 @@
 						class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
 					/>
 					<div class="ml-2 flex-1 flex flex-col">
-						<audio-recorder
-							@close-modal="closeModal"
-							@insert-babble="insertNewBabble"
-						/>
+						<audio-recorder @close-modal="closeModal" />
 					</div>
 				</div>
 			</div>
@@ -47,12 +44,13 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
-import store from '../store';
 import AudioRecorder from './audioRecorder/recorder.vue';
+import store from '../store';
+import { computed } from 'vue';
+
 export default {
 	components: { AudioRecorder },
-	setup(props, { emit }) {
+	setup({ emit }) {
 		const currentUser = computed(() => store.state.user);
 
 		const closeModal = () => {

@@ -12,7 +12,7 @@ export default {
 		};
 	},
 	watch: {
-		$route(to, from) {
+		$route() {
 			if (this.audio) {
 				this.audio.pause();
 				this.audio = null;

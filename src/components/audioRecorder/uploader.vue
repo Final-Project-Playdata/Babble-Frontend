@@ -36,21 +36,21 @@ export default {
 	components: {
 		IconButton,
 	},
-	setup(props, { emit }) {
+	setup({ emit }) {
 		const upload = async () => {
 			if (!store.state.checkedAudio) {
 				return;
 			}
-			console.log(store.state.checkedAudio);
-			console.log(store.state.isCommentModal);
+
 			if (!store.state.isCommentModal) {
-				console.log(store.state.checkedAudio);
 				const babble = {
 					fileUrl: store.state.checkedAudio.name,
 					tags: store.state.tags,
 				};
+
 				let newBabble = await insertBabble(babble);
 				newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
+
 				store.commit('SET_CHECKEDAUDIO', null);
 				emit('insert-babble', newBabble.data);
 			} else {

@@ -58,17 +58,17 @@
 							class="far fa-comment text-gray-400 text-xl hover:bg-blue-50 hover:text-primary p-2 rounded-full h-10 w-10"
 						></i>
 					</button>
-					<button @click="onRebabble(babble)">
+					<button @click="onRebabble()">
 						<i
 							v-if="isRebabbled"
-							class="fas fa-rebabble text-xl hover:bg-green-50 text-green-400 p-2 rounded-full h-10 w-10"
+							class="fas fa-retweet text-xl hover:bg-green-50 text-green-400 p-2 rounded-full h-10 w-10"
 						></i>
 						<i
 							v-else
-							class="fas fa-rebabble text-gray-400 text-xl hover:bg-green-50 hover:text-green-400 p-2 rounded-full h-10 w-10"
+							class="fas fa-retweet text-gray-400 text-xl hover:bg-green-50 hover:text-green-400 p-2 rounded-full h-10 w-10"
 						></i>
 					</button>
-					<button @click="handleLikes(babble.id)">
+					<button @click="handleLikes()">
 						<i
 							v-if="this.isLiked"
 							class="far fa-heart text-xl hover:bg-red-50 text-red-400 p-2 rounded-full h-10 w-10"
@@ -130,32 +130,26 @@
 </template>
 
 <script>
-import Trends from '../components/Trends.vue';
-import router from '../router';
-import { onBeforeMount, ref, computed } from 'vue';
-import store from '../store';
-import { useRoute } from 'vue-router';
-import moment from 'moment';
+import DetailAudioPlayer from '../components/DetailAudioPlayer.vue';
 import CommentModal from '../components/CommentModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
-import DetailAudioPlayer from '../components/DetailAudioPlayer.vue';
+import Trends from '../components/Trends.vue';
+import router from '../router';
+import store from '../store';
+import moment from 'moment';
+import { onBeforeMount, ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
 import {
-	getBabble,
-	deleteComment,
-	like,
-	unlike,
-	deleteBabble,
 	insertRebabble,
+	deleteComment,
+	deleteBabble,
+	getBabble,
+	unlike,
+	like,
 } from '../api/babble';
 
 export default {
 	components: { Trends, CommentModal, AudioPlayer, DetailAudioPlayer },
-	data: function () {
-		return {
-			isRebabbled: false,
-			isLiked: false,
-		};
-	},
 	methods: {
 		onAddComment(comment) {
 			if (comment) {
@@ -168,40 +162,54 @@ export default {
 			if (confirm('정말로 답글을 삭제하시겠습니까?')) {
 				deleteComment(this.babble.id, commentId);
 				this.babble.comments = this.babble.comments.filter(
-					c => c.id !== commentId
+					comment => comment.id !== commentId
 				);
 			}
 		},
-		onRebabble(babble) {
+		async onRebabble() {
 			if (this.isRebabbled) {
-				deleteBabble(babble.id);
+				this.babble.rebabbles.forEach(rebabble => {
+					if (rebabble.user.id === this.currentUser.id) {
+						deleteBabble(rebabble.id);
+
+						let index = this.babble.rebabbles.indexOf(rebabble);
+						this.babble.rebabbles.splice(index, 1);
+					}
+				});
 				this.isRebabbled = false;
 			} else {
 				const data = {
-					fileUrl: babble.fileUrl,
-					tags: babble.tags,
-					rebabbleId: babble.id,
+					fileUrl: this.babble.fileUrl,
+					tags: this.babble.tags,
+					rebabbleId: this.babble.id,
 				};
-				insertRebabble(data);
+
+				const rebabble = await insertRebabble(data);
+				this.babble.rebabbles.push(rebabble.data);
 				this.isRebabbled = true;
 			}
 		},
-		handleLikes(babbleId) {
+		handleLikes() {
 			if (this.isLiked) {
-				unlike(babbleId);
+				unlike(this.babble.id);
+				this.babble.likes = this.babble.likes.filter(
+					user => user.id !== this.currentUser.id
+				);
 				this.isLiked = false;
 			} else {
-				like(babbleId);
+				like(this.babble.id);
+				this.babble.likes.push(this.currentUser);
 				this.isLiked = true;
 			}
 		},
 	},
 	setup() {
-		const babble = ref(null);
-		const comments = ref([]);
 		const currentUser = computed(() => store.state.user);
 		const showCommentModal = ref(false);
-
+		const isRebabbled = ref(false);
+		const isLiked = ref(false);
+		const babble = ref(null);
+		const comments = ref([]);
 		const route = useRoute();
 
 		onBeforeMount(async () => {
@@ -212,11 +220,25 @@ export default {
 			babble.value.comments.forEach(comment => {
 				comment.user.avatar = `http://localhost:88/image/${comment.user.avatar}`;
 			});
+
+			babble.value.rebabbles.forEach(babble => {
+				if (babble.user.id === currentUser.value.id) {
+					isRebabbled.value = true;
+				}
+			});
+
+			babble.value.likes.forEach(like => {
+				if (like.id === currentUser.value.id) {
+					isLiked.value = true;
+				}
+			});
 		});
 		return {
 			showCommentModal,
 			currentUser,
+			isRebabbled,
 			comments,
+			isLiked,
 			router,
 			babble,
 			moment,

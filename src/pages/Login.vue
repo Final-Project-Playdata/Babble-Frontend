@@ -1,7 +1,7 @@
 <template>
 	<div class="flex flex-col items-center space-y-4 mt-10">
 		&nbsp;
-			<br>
+		<br />
 		<img
 			src="../logo/6.jpg"
 			width="300"
@@ -38,12 +38,12 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import store from '../store/index';
-import { signIn } from '../api/auth';
-import { getMyInfo, getFollowers, getFollowings } from '../api/babble';
 import AudioRecorder from '../components/audioRecorder/recorder.vue';
+import store from '../store/index';
+import { useRouter } from 'vue-router';
+import { getMyInfo } from '../api/babble';
+import { signIn } from '../api/auth';
+import { ref } from 'vue';
 
 export default {
 	components: { AudioRecorder },
@@ -59,50 +59,27 @@ export default {
 				return;
 			}
 
-			try {
-				loading.value = true;
-				const userData = {
-					username: email.value,
-					password: password.value,
-				};
+			loading.value = true;
 
-				store.commit('SET_USERNAME', email.value);
-				store.commit('SET_PASSWORD', password.value);
+			const userData = {
+				username: email.value,
+				password: password.value,
+			};
 
-				const data = await signIn(userData);
+			store.commit('SET_USERNAME', email.value);
+			store.commit('SET_PASSWORD', password.value);
 
-				// get user info
-				await store.commit('SET_TOKEN', data.headers['authorization']);
-				const doc = await getMyInfo();
+			const data = await signIn(userData);
 
-				doc.data.avatar = `http://localhost:88/image/${doc.data.avatar}`;
-				doc.data.background = `http://localhost:88/image/${doc.data.background}`;
+			await store.commit('SET_TOKEN', data.headers['authorization']);
+			const doc = await getMyInfo();
 
-				let followers = await getFollowers(doc.data.id);
-				let followings = await getFollowings(doc.data.id);
+			doc.data.avatar = `http://localhost:88/image/${doc.data.avatar}`;
+			doc.data.background = `http://localhost:88/image/${doc.data.background}`;
 
-				store.commit('SET_USER', doc.data);
-				store.commit('SET_FOLLOWERS', followers.data);
-				store.commit('SET_FOLLOWINGS', followings.data);
-				router.replace('/');
-			} catch (e) {
-				switch (e.code) {
-					case 'auth/invalid-email':
-						alert('잘못된 이메일 형식입니다.');
-						break;
-					case 'auth/wrong-password':
-						alert('비밀번호가 틀립니다.');
-						break;
-					case 'auth/user-not-found':
-						alert('등록되지 않은 이메일입니다.');
-						break;
-					default:
-						alert(e.message);
-						break;
-				}
-			} finally {
-				loading.value = false;
-			}
+			store.commit('SET_USER', doc.data);
+			loading.value = false;
+			router.replace('/');
 		};
 
 		return {
