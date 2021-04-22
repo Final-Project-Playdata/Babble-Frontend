@@ -21,37 +21,15 @@
 					class="text-center fas fa-cog text-lg text-primary hover:bg-blue-50 p-2 rounded-full w-10 h-10"
 				></i>
 			</div>
-			<div
-				class="border-b border-gray-100 hover:bg-gray-100 px-4 py-2 cursor-pointer"
-				v-for="trend in 3"
-				:key="trend"
-			>
-				<div class="flex">
-					<div class="flex-1 flex flex-col">
-						<div class="font-bold text-lg">오늘</div>
-						<div class="text-gray-500">날씨</div>
-					</div>
-					<i class="fas fa-ellipsis-h text-gray-500"></i>
-				</div>
-			</div>
+			<br>
+			<iframe src="http://localhost:5601/app/dashboards#/view/96924f90-a334-11eb-acb4-03cf1d01ee30?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" height="490" ></iframe>
 		</div>
-
 		<!-- follow recommends -->
 		<div class="mt-5 w-full rounded-xl bg-gray-50 flex flex-col">
 			<div class="px-3 py-3 border-b border-gray-100">
 				<span class="text-lg font-bold">최근 나의 상태</span>
 			</div>
-			<div
-				class="border-b border-gray-100 hover:bg-gray-100 px-4 py-2 cursor-pointer"
-				v-for="trend in 3"
-				:key="trend"
-			>
-				<div class="flex items-center">
-					<div class="flex-1 flex flex-col">
-						<div class="font-bold">😍😊😉</div>
-					</div>
-				</div>
-			</div>
+			<iframe src="http://localhost:5601/app/dashboards#/view/f459b070-a328-11eb-acb4-03cf1d01ee30?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" height="490" ></iframe>
 		</div>
 	</div>
 </template>
