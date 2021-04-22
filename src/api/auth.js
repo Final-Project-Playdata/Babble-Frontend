@@ -10,12 +10,10 @@ function signIn(data) {
 }
 
 function allClient(data) {
-	checkJwt();
 	return instance.get('/getMemberList', data);
 }
 
 function updateUserInfo(data) {
-	checkJwt();
 	return mvcInstance.put(`user/${data.id}`, data);
 }
 

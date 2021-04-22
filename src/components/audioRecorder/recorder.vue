@@ -309,7 +309,7 @@ export default {
 		IconButton,
 		Uploader,
 	},
-	beforeDestroy() {
+	beforeUnmount() {
 		this.stopRecorder();
 	},
 	methods: {

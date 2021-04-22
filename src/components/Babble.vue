@@ -63,7 +63,7 @@
 				</div>
 				<!-- rebabble button -->
 				<div
-					v-if="!isRebabbleed"
+					v-if="!isRebabbled"
 					class="text-gray-500 hover:text-green-400"
 					@click="onInsertRebabble(babble)"
 				>
@@ -113,7 +113,7 @@ export default {
 		onDeleteBabble(babbleId) {
 			if (confirm('정말로 배블을 삭제하시겠습니까?')) {
 				deleteBabble(babbleId);
-				this.isRebabbleed = false;
+				this.isRebabbled = false;
 				this.$emit('delete', this.babble);
 			}
 		},
@@ -129,7 +129,7 @@ export default {
 
 			this.$emit('rebabble', rebabble.data);
 			this.babble.rebabbles.push(rebabble.data);
-			this.isRebabbleed = true;
+			this.isRebabbled = true;
 		},
 		onDeleteRebabble() {
 			this.babble.rebabbles.forEach(rebabble => {
@@ -143,7 +143,7 @@ export default {
 				}
 			});
 
-			this.isRebabbleed = false;
+			this.isRebabbled = false;
 		},
 		handleLike(babble) {
 			like(babble.id);
