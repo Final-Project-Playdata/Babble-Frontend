@@ -22,14 +22,14 @@
 				></i>
 			</div>
 			<br>
-			<iframe src="http://localhost:5601/app/dashboards#/view/96924f90-a334-11eb-acb4-03cf1d01ee30?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" height="490" ></iframe>
+			<iframe src="http://localhost:5601/app/dashboards#/view/1a09ac70-a343-11eb-b490-43c22c963dbd?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A10000)%2Ctime%3A(from%3Anow-1h%2Cto%3Anow))&hide-filter-bar=true" height="380"></iframe>
 		</div>
 		<!-- follow recommends -->
 		<div class="mt-5 w-full rounded-xl bg-gray-50 flex flex-col">
 			<div class="px-3 py-3 border-b border-gray-100">
 				<span class="text-lg font-bold">최근 나의 상태</span>
 			</div>
-			<iframe src="http://localhost:5601/app/dashboards#/view/f459b070-a328-11eb-acb4-03cf1d01ee30?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!t%2Cvalue%3A0)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&hide-filter-bar=true" height="490" ></iframe>
+			<iframe src="http://localhost:5601/app/dashboards#/view/c31e20c0-a343-11eb-b490-43c22c963dbd?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A10000)%2Ctime%3A(from%3Anow-1h%2Cto%3Anow))&hide-filter-bar=true" height="490"></iframe>
 		</div>
 	</div>
 </template>

@@ -36,7 +36,7 @@ export default {
 	components: {
 		IconButton,
 	},
-	setup({ emit }) {
+	setup(props, { emit }) {
 		const upload = async () => {
 			if (!store.state.checkedAudio) {
 				return;
