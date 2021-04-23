@@ -1,6 +1,6 @@
+import { setNotificationInterval } from '../api/babbleElasticsearch';
 import { createRouter, createWebHistory } from 'vue-router';
 import Notifications from '../pages/Notifications.vue';
-import Messages from '../pages/Messages.vue';
 import Register from '../pages/Register.vue';
 import Profile from '../pages/Profile.vue';
 import Babble from '../pages/Babble.vue';
@@ -23,14 +23,6 @@ const routes = [
 		component: Notifications,
 		title: '알림',
 		icon: 'far fa-bell fa-fw text-2xl',
-		meta: { isMenu: true, layout: 'DefaultLayout', requireAuth: true },
-	},
-	{
-		path: '/messages',
-		name: 'messages',
-		component: Messages,
-		title: '쪽지',
-		icon: 'far fa-envelope fa-fw text-2xl',
 		meta: { isMenu: true, layout: 'DefaultLayout', requireAuth: true },
 	},
 	{
@@ -83,7 +75,15 @@ router.beforeEach((to, from, next) => {
 	// not authenticated
 	if (requireAuth && !currentUser) next('/login');
 	// authenticated
-	else next();
+	else {
+		if (store.state.user) {
+			store.commit(
+				'SET_NOTIFICATIONINTERVAL',
+				setNotificationInterval(store.state.user.id)
+			);
+		}
+		next();
+	}
 });
 
 export default router;

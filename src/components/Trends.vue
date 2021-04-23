@@ -1,6 +1,6 @@
 <template>
 	<div class="hidden lg:block lg:w-2/5 px-4 py-2">
-		<!--tweet search  input -->
+		<!--babble search  input -->
 		<div class="relative mb-5">
 			<input
 				v-model="hashTag"

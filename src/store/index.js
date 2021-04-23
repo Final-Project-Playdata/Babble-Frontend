@@ -1,6 +1,6 @@
 import createPersistedState from 'vuex-persistedstate';
 import { createStore } from 'vuex';
-
+import { setNotificationInterval } from '../api/babbleElasticsearch';
 const store = createStore({
 	state() {
 		return {
@@ -9,22 +9,30 @@ const store = createStore({
 			token: null,
 			username: null,
 			password: null,
-			isCommentModal: false,
 			checkedAudio: null,
+			notifications: null,
+			isCommentModal: false,
+			notificationInterval: null,
 		};
 	},
 	mutations: {
 		SET_USER: (state, user) => {
 			state.user = user;
 		},
-		CLEAR_USER: state => {
+		CLEAR_DATA: state => {
 			state.user = null;
+			state.tags = null;
+			state.token = null;
+			state.username = null;
+			state.password = null;
+			state.checkedAudio = null;
+			state.notifications = null;
+			state.isCommentModal = false;
+			clearInterval(state.notificationInterval);
+			state.notificationInterval = null;
 		},
 		SET_TOKEN(state, token) {
 			state.token = token;
-		},
-		CLEAR_TOKEN(state) {
-			state.token = null;
 		},
 		SET_CHECKEDAUDIO(state, checkedAudio) {
 			state.checkedAudio = checkedAudio;
@@ -40,6 +48,9 @@ const store = createStore({
 		},
 		SET_ISCOMMENTMODAL(state, isCommentModal) {
 			state.isCommentModal = isCommentModal;
+		},
+		SET_NOTIFICATIONINTERVAL(state, notificationInterval) {
+			state.notificationInterval = notificationInterval;
 		},
 	},
 	plugins: [createPersistedState()],

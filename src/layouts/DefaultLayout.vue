@@ -142,8 +142,7 @@ export default {
 		const currentUser = computed(() => store.state.user);
 
 		const onLogout = async () => {
-			store.commit('CLEAR_USER');
-			store.commit('CLEAR_TOKEN');
+			store.commit('CLEAR_DATA');
 			await router.replace('/login');
 		};
 

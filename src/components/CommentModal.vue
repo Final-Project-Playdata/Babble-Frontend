@@ -117,6 +117,7 @@ import moment from 'moment';
 import store from '../store/index';
 import { insertComment } from '../api/babble';
 import AudioRecorder from './audioRecorder/recorder.vue';
+import { sendCommentNotification } from '../api/babbleElasticsearch.js';
 
 export default {
 	props: ['babble'],
@@ -141,6 +142,8 @@ export default {
 			store.commit('SET_ISCOMMENTMODAL', false);
 			store.commit('SET_CHECKEDAUDIO', null);
 			emit('close-modal', comment.data);
+
+			sendCommentNotification(props.babble, this.currentUser);
 		};
 
 		return {

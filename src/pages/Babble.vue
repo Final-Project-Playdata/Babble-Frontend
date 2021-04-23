@@ -146,7 +146,12 @@ import {
 	getBabble,
 	unlike,
 	like,
-} from '../api/babble';
+} from '../api/babble.js';
+import {
+	sendCommentNotification,
+	sendRebabbleNotification,
+	sendLikeNotification,
+} from '../api/babbleElasticsearch.js';
 
 export default {
 	components: { Trends, CommentModal, AudioPlayer, DetailAudioPlayer },
@@ -157,6 +162,8 @@ export default {
 				this.babble.comments.push(comment);
 			}
 			this.showCommentModal = false;
+
+			sendCommentNotification(this.babble, this.currentUser);
 		},
 		onDeleteComment(commentId) {
 			if (confirm('정말로 답글을 삭제하시겠습니까?')) {
@@ -187,9 +194,11 @@ export default {
 				const rebabble = await insertRebabble(data);
 				this.babble.rebabbles.push(rebabble.data);
 				this.isRebabbled = true;
+
+				sendRebabbleNotification(this.babble, this.currentUser);
 			}
 		},
-		handleLikes() {
+		async handleLikes() {
 			if (this.isLiked) {
 				unlike(this.babble.id);
 				this.babble.likes = this.babble.likes.filter(
@@ -200,6 +209,8 @@ export default {
 				like(this.babble.id);
 				this.babble.likes.push(this.currentUser);
 				this.isLiked = true;
+
+				sendLikeNotification(this.babble, this.currentUser);
 			}
 		},
 	},

@@ -104,6 +104,10 @@ import CommentModal from './CommentModal.vue';
 import AudioPlayer from './AudioPlayer.vue';
 import moment from 'moment';
 import { deleteBabble, insertRebabble, like, unlike } from '../api/babble';
+import {
+	sendRebabbleNotification,
+	sendLikeNotification,
+} from '../api/babbleElasticsearch.js';
 import { ref } from 'vue';
 
 export default {
@@ -130,6 +134,8 @@ export default {
 			this.$emit('rebabble', rebabble.data);
 			this.babble.rebabbles.push(rebabble.data);
 			this.isRebabbled = true;
+
+			sendRebabbleNotification(this.babble, this.currentUser);
 		},
 		onDeleteRebabble() {
 			this.babble.rebabbles.forEach(rebabble => {
@@ -150,6 +156,8 @@ export default {
 			this.babble.likes.push(this.currentUser);
 			this.isLiked = true;
 			this.$emit('like', babble);
+
+			sendLikeNotification(this.babble, this.currentUser);
 		},
 		handleUnlike(babbleId) {
 			unlike(babbleId);

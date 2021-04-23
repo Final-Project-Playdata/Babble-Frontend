@@ -165,6 +165,7 @@ import Babble from '../components/Babble.vue';
 import router from '../router';
 import moment from 'moment';
 import store from '../store';
+import { sendFollowNotification } from '../api/babbleElasticsearch';
 import { computed, ref, onBeforeMount } from 'vue';
 import { getUser, follow, unfollow } from '../api/babble';
 import { useRoute } from 'vue-router';
@@ -244,19 +245,21 @@ export default {
 				likeBabble.user.avatar = `http://localhost:88/image/${likeBabble.user.avatar}`;
 			});
 
-			if (profileUser.id === currentUser.id) {
+			if (profileUser.value.id === currentUser.value.id) {
 				store.commit('SET_USER', user.data);
 			}
 		});
 
 		const onFollow = () => {
 			follow(profileUser.value.id);
-			profileUser.followers.value.push(currentUser.value);
+			profileUser.value.followers.push(currentUser.value);
+
+			sendFollowNotification(profileUser.value, currentUser.value);
 		};
 
 		const onUnFollow = () => {
 			unfollow(profileUser.value.id);
-			profileUser.followers.value = profileUser.followers.value.filter(
+			profileUser.value.followers = profileUser.value.followers.filter(
 				f => f.id !== currentUser.value.id
 			);
 		};
