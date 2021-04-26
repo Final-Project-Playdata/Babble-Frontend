@@ -148,8 +148,6 @@
 				/>
 			</div>
 		</div>
-		<!-- trend section -->
-		<Trends />
 		<profile-edit-modal
 			v-if="showProfileEditModal"
 			@close-modal="editProfileUser"
@@ -160,7 +158,6 @@
 <script>
 import ProfileEditModal from '../components/ProfileEditModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
-import Trends from '../components/Trends.vue';
 import Babble from '../components/Babble.vue';
 import router from '../router';
 import moment from 'moment';
@@ -171,7 +168,7 @@ import { getUser, follow, unfollow } from '../api/babble';
 import { useRoute } from 'vue-router';
 
 export default {
-	components: { Trends, Babble, ProfileEditModal, AudioPlayer },
+	components: { Babble, ProfileEditModal, AudioPlayer },
 	methods: {
 		deleteBabble(babble) {
 			this.babbles = this.babbles.filter(t => t !== babble);

@@ -120,7 +120,6 @@
 				</div>
 			</div>
 		</div>
-		<trends></trends>
 		<comment-modal
 			:babble="babble"
 			v-if="showCommentModal"
@@ -133,7 +132,6 @@
 import DetailAudioPlayer from '../components/DetailAudioPlayer.vue';
 import CommentModal from '../components/CommentModal.vue';
 import AudioPlayer from '../components/AudioPlayer.vue';
-import Trends from '../components/Trends.vue';
 import router from '../router';
 import store from '../store';
 import moment from 'moment';
@@ -154,7 +152,7 @@ import {
 } from '../api/babbleElasticsearch.js';
 
 export default {
-	components: { Trends, CommentModal, AudioPlayer, DetailAudioPlayer },
+	components: { CommentModal, AudioPlayer, DetailAudioPlayer },
 	methods: {
 		onAddComment(comment) {
 			if (comment) {

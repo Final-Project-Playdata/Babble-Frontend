@@ -1,5 +1,4 @@
 import { elInstance } from './index';
-import store from '../store/index';
 
 const config = { headers: { 'Content-Type': 'application/json' } };
 
@@ -12,18 +11,6 @@ function getNotifications(id) {
 		`notification/_search?q=receiver:${id}&sort=timestamp:desc`,
 		config
 	);
-}
-
-async function setNotificationInterval(id) {
-	clearInterval(store.state.notificationInterval);
-	const notification = await getNotifications(id);
-	console.log(notification.data.hits.hits);
-	store.state.notifications = notification.data.hits.hits;
-	return setInterval(async () => {
-		const notification = await getNotifications(id);
-		console.log(notification.data.hits.hits);
-		store.state.notifications = notification.data.hits.hits;
-	}, 10000);
 }
 
 function sendCommentNotification(babble, user) {
@@ -84,9 +71,9 @@ function sendFollowNotification(profileUser, currentUser) {
 
 export {
 	sendNotification,
-	setNotificationInterval,
 	sendCommentNotification,
 	sendRebabbleNotification,
 	sendLikeNotification,
 	sendFollowNotification,
+	getNotifications,
 };

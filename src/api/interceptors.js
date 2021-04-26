@@ -40,11 +40,10 @@ export function setInterceptors(instance) {
 					}
 					return instance(originalRequest);
 				} else {
-					window.location.href = '/';
 				}
 			}
 			if (error.response.status === 500) {
-				window.location.reload();
+				window.location.href = '/login';
 			}
 			return Promise.reject(error);
 		}

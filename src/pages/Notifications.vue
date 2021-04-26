@@ -34,20 +34,22 @@
 			>
 		</div>
 	</div>
-	<!-- trends -->
-	<Trends />
 </template>
 
 <script>
-import Trends from '../components/Trends.vue';
-import { computed } from 'vue';
+import { getNotifications } from '../api/babbleElasticsearch.js';
+import { computed, onBeforeMount, ref } from 'vue';
 import store from '../store';
 
 export default {
-	components: { Trends },
 	setup() {
 		const currentUser = computed(() => store.state.user);
-		const notifications = computed(() => store.state.notifications);
+		const notifications = ref([]);
+
+		onBeforeMount(async () => {
+			const result = await getNotifications(currentUser.value.id);
+			notifications.value = result.data.hits.hits;
+		});
 
 		return {
 			currentUser,

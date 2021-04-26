@@ -32,20 +32,17 @@
 			/>
 		</div>
 	</div>
-	<!-- trend part -->
-	<Trends />
 </template>
 
 <script>
 import AudioRecorder from '../components/audioRecorder/recorder.vue';
-import Trends from '../components/Trends.vue';
 import Babble from '../components/Babble.vue';
 import store from '../store';
 import { getBabbles, getBabblesWithTag } from '../api/babble';
 import { ref, computed, onBeforeMount } from 'vue';
 
 export default {
-	components: { Trends, Babble, AudioRecorder },
+	components: { Babble, AudioRecorder },
 	watch: {
 		async '$route.params.tag'(val) {
 			let data = await getBabblesWithTag(val);

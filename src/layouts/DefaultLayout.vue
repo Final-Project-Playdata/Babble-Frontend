@@ -83,6 +83,7 @@
 		<!-- main section -->
 		<div class="flex-1 flex h-screen">
 			<router-view ref="home" />
+			<trends></trends>
 		</div>
 		<!-- profile dropdown menu -->
 		<div
@@ -118,7 +119,6 @@
 				@{{ currentUser.nickname }} 계정에서 로그아웃
 			</button>
 		</div>
-
 		<!-- babble modal popup -->
 		<babble-modal
 			v-if="showBabbleModal"
@@ -132,9 +132,10 @@ import { ref, onBeforeMount, computed } from 'vue';
 import router from '../router';
 import store from '../store';
 import BabbleModal from '../components/BabbleModal.vue';
+import Trends from '../components/Trends.vue';
 
 export default {
-	components: { BabbleModal },
+	components: { BabbleModal, Trends },
 	setup() {
 		const routes = ref([]);
 		const showProfileDropdown = ref(false);

@@ -1,4 +1,3 @@
-import { setNotificationInterval } from '../api/babbleElasticsearch';
 import { createRouter, createWebHistory } from 'vue-router';
 import Notifications from '../pages/Notifications.vue';
 import Register from '../pages/Register.vue';
@@ -64,26 +63,18 @@ const routes = [
 ];
 
 const router = createRouter({
+	mode: 'history',
 	history: createWebHistory(),
 	routes,
 });
 
 // navigation guard
 router.beforeEach((to, from, next) => {
-	const currentUser = store.state.user;
 	const requireAuth = to.matched.some(record => record.meta.requireAuth);
 	// not authenticated
-	if (requireAuth && !currentUser) next('/login');
+	if (requireAuth && !store.state.user) next('/login');
 	// authenticated
-	else {
-		if (store.state.user) {
-			store.commit(
-				'SET_NOTIFICATIONINTERVAL',
-				setNotificationInterval(store.state.user.id)
-			);
-		}
-		next();
-	}
+	else next();
 });
 
 export default router;
