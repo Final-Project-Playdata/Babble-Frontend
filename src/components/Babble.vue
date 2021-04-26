@@ -169,7 +169,7 @@ export default {
 		},
 		onCloseModal(comment) {
 			this.babble.comments.push(comment);
-			showCommentModal = false;
+			this.showCommentModal = false;
 		},
 	},
 	setup(props) {

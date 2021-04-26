@@ -50,7 +50,7 @@ import { computed } from 'vue';
 
 export default {
 	components: { AudioRecorder },
-	setup({ emit }) {
+	setup(props, { emit }) {
 		const currentUser = computed(() => store.state.user);
 
 		const closeModal = () => {

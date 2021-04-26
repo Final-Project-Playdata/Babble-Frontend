@@ -44,9 +44,6 @@ const store = createStore({
 		SET_ISCOMMENTMODAL(state, isCommentModal) {
 			state.isCommentModal = isCommentModal;
 		},
-		SET_NOTIFICATIONINTERVAL(state, notificationInterval) {
-			state.notificationInterval = notificationInterval;
-		},
 	},
 	plugins: [createPersistedState()],
 });

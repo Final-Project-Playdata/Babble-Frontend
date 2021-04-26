@@ -223,7 +223,7 @@
 			</div>
 
 			<div class="audio_recorded">
-				<audio-player :src="record" v-if="record" />
+				<audio-player :src="url" v-if="url" />
 			</div>
 
 			<div class="ar-recorder__duration" v-if="!record">
@@ -238,9 +238,7 @@
 					v-if="record"
 					class="ar__uploader"
 					:record="record"
-					:filename="filename"
-					:headers="headers"
-					:upload-url="uploadUrl"
+					:tags="tags"
 					@close-modal="closeModal"
 					@insert-babble="insertNewBabble"
 					@insert-comment="insertNewComment"
@@ -268,14 +266,14 @@
 </template>
 
 <script>
-import AudioPlayer from './player.vue';
-import IconButton from './icon-button.vue';
-import Recorder from './recorder.js';
-import Uploader from './uploader.vue';
 import UploaderPropsMixin from './uploader-props.js';
-import { convertTimeMMSS } from './utils.js';
-import { checkAudio } from '../../api/babbleFlask.js';
+import IconButton from './icon-button.vue';
 import store from '../../store/index.js';
+import AudioPlayer from './player.vue';
+import Uploader from './uploader.vue';
+import Recorder from './recorder.js';
+import { checkAudio } from '../../api/babbleFlask.js';
+import { convertTimeMMSS } from './utils.js';
 
 export default {
 	mixins: [UploaderPropsMixin],
@@ -296,12 +294,13 @@ export default {
 	},
 	data() {
 		return {
-			isUploading: false,
 			recorder: this._initRecorder(),
+			isUploading: false,
+			uploadStatus: null,
 			record: null,
 			selected: {},
-			uploadStatus: null,
 			tags: [],
+			url: '',
 		};
 	},
 	components: {
@@ -343,14 +342,14 @@ export default {
 			data.append('audio', audio);
 
 			let checkedAudio = await checkAudio(data);
-			let tempTags = [];
-			tempTags = tempTags.concat(
+
+			this.tags = this.tags.concat(
 				checkedAudio.data.emotion,
 				checkedAudio.data.keyword,
 				checkedAudio.data.sensitivity
 			);
-			let emoges = [];
-			tempTags.forEach(tag => {
+
+			this.tags.forEach(tag => {
 				let answer = '';
 				switch (tag) {
 					case '기쁨':
@@ -382,15 +381,13 @@ export default {
 						break;
 				}
 				if (answer !== 'none') {
-					emoges.push(answer);
+					this.tags.push(answer);
 				}
 			});
 
-			tempTags = tempTags.concat(emoges);
-			this.tags = tempTags;
-			this.record = `http://localhost:88/audio/${checkedAudio.data.name}`;
+			this.url = `http://localhost:88/audio/${checkedAudio.data.name}`;
+			this.record = checkedAudio.data;
 			store.commit('SET_CHECKEDAUDIO', checkedAudio.data);
-			store.commit('SET_TAGS', tempTags);
 		},
 		_initRecorder() {
 			return new Recorder({
@@ -404,21 +401,17 @@ export default {
 			});
 		},
 		closeModal: function () {
+			this.reset();
 			this.$emit('close-modal');
 		},
 		insertNewBabble: function (babble) {
-			this.reset();
 			this.$emit('insert-babble', babble);
 		},
 		insertNewComment: function (babble) {
-			this.reset();
 			this.$emit('insert-comment');
 		},
 	},
 	computed: {
-		attemptsLeft() {
-			return this.attempts - this.record.length;
-		},
 		iconButtonType() {
 			return this.isRecording && this.isPause
 				? 'mic'

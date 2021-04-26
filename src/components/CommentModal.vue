@@ -143,7 +143,7 @@ export default {
 			store.commit('SET_CHECKEDAUDIO', null);
 			emit('close-modal', comment.data);
 
-			sendCommentNotification(props.babble, this.currentUser);
+			sendCommentNotification(props.babble, currentUser.value);
 		};
 
 		return {

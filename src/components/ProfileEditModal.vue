@@ -159,7 +159,7 @@ import { ref } from 'vue';
 import store from '../store';
 
 export default {
-	setup({ emit }) {
+	setup(props, { emit }) {
 		const profileImage = ref(null);
 		const profileImageData = ref(null);
 		const backgroundImage = ref(null);

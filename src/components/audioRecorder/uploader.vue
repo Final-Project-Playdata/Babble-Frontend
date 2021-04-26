@@ -32,26 +32,26 @@ export default {
 	mixins: [UploaderPropsMixin],
 	props: {
 		record: { type: Object },
+		tags: { type : Array }
 	},
 	components: {
 		IconButton,
 	},
 	setup(props, { emit }) {
 		const upload = async () => {
-			if (!store.state.checkedAudio) {
+			if (!props.record) {
 				return;
 			}
 
 			if (!store.state.isCommentModal) {
 				const babble = {
-					fileUrl: store.state.checkedAudio.name,
-					tags: store.state.tags,
+					fileUrl: props.record.name,
+					tags: props.tags,
 				};
 
 				let newBabble = await insertBabble(babble);
 				newBabble.data.user.avatar = `http://localhost:88/image/${newBabble.data.user.avatar}`;
 
-				store.commit('SET_CHECKEDAUDIO', null);
 				emit('insert-babble', newBabble.data);
 			} else {
 				store.commit('SET_ISCOMMENTMODAL', false);

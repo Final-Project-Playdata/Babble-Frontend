@@ -17,11 +17,7 @@
 				class="flex items-center justify-between px-3 py-1 border-b border-gray-100"
 			>
 				<span class="text-lg font-bold">최근 내가 많이 사용한 단어들</span>
-				<i
-					class="text-center fas fa-cog text-lg text-primary hover:bg-blue-50 p-2 rounded-full w-10 h-10"
-				></i>
 			</div>
-			<br>
 			<iframe src="http://localhost:5601/app/dashboards#/view/1a09ac70-a343-11eb-b490-43c22c963dbd?embed=true&_g=(filters%3A!()%2CrefreshInterval%3A(pause%3A!f%2Cvalue%3A10000)%2Ctime%3A(from%3Anow-1h%2Cto%3Anow))&hide-filter-bar=true" height="380"></iframe>
 		</div>
 		<!-- follow recommends -->
